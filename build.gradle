@@ -1,0 +1,79 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.8.RELEASE'
+        nexusUrl="https://devrepo.devcloud.huaweicloud.com"
+        nexusUsername="d69c8cfc9090494f9180b0c1d179d947_ae19961f3a4e4b0ba533adc398794ad1"
+        nexusPassword="[We4Lg=15_"
+	}
+	repositories {
+        maven { url "${nexusUrl}/repository/maven-public/" }
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+//    configurations {
+//        compile.exclude module: "javax.ws.rs-api"
+//    }
+
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'maven'
+group = 'com.rencai.service'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    maven { url "${nexusUrl}/repository/maven-public/" }
+	mavenCentral()
+}
+
+
+ext {
+	springCloudVersion = 'Dalston.SR4'
+}
+
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	// Database Config
+	compile "com.zaxxer:HikariCP"
+	compile "mysql:mysql-connector-java"
+	compile "org.mybatis.spring.boot:mybatis-spring-boot-starter:1.0.1"
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '1.5.2.RELEASE'
+
+
+	//swagger
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.5.8.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '1.5.2.RELEASE'
+	// https://mvnrepository.com/artifact/org.springframework.session/spring-session
+	//compile group: 'org.springframework.session', name: 'spring-session', version: '1.3.1.RELEASE'
+
+	//redis
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '1.5.6.RELEASE'
+	compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.10'
+	compile "com.google.guava:guava:19.0"
+
+	// https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
