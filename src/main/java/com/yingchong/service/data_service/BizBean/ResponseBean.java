@@ -1,6 +1,6 @@
 package com.yingchong.service.data_service.BizBean;
 
-import com.rencai.service.user_service.utils.DataErrorCode;
+import com.yingchong.service.data_service.utils.DataErrorCode;
 import io.swagger.annotations.ApiModelProperty;
 
 public class ResponseBean<T>{
