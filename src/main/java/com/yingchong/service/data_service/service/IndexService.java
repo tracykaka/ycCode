@@ -18,4 +18,10 @@ public class IndexService {
         bizTestBean.setName("zhangsan");
         return new ResponseBean<>(bizTestBean);
     }
+    //public ResponseBean<BizTestBean> Flux(String startDate,String endData) {
+
+
+
+
+    //}
 }

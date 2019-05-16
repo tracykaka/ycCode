@@ -37,4 +37,17 @@ public class IndexResource {
     ) {
         return indexService.testIndex(param);
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="流量", notes="流量")
+    @RequestMapping(value={"/upFlux"}, method= RequestMethod.GET)
+    public ResponseBean<BizTestBean> Flux(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return indexService.Flux(startDate,endDate);
+    }
 }
