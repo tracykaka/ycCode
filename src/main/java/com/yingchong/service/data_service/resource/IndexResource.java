@@ -2,6 +2,7 @@ package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.BizTestBean;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.service.IndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Api(value="首页service",tags={"首页操作接口"})
 @RestController
@@ -44,7 +46,7 @@ public class IndexResource {
     })
     @ApiOperation(value="流量", notes="流量")
     @RequestMapping(value={"/upFlux"}, method= RequestMethod.GET)
-    public ResponseBean<BizTestBean> Flux(
+    public ResponseBean<List<BizDataBean>> Flux(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){
