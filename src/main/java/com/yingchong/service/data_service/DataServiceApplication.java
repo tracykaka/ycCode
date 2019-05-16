@@ -13,6 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @MapperScan("com.yingchong")
 @ComponentScan("com.yingchong")
 @EnableSwagger2
+@ComponentScan("com.yingchong")
 @ServletComponentScan(basePackages = {"com.yingchong"})
 //@EnableRedisHttpSession
 public class DataServiceApplication {
