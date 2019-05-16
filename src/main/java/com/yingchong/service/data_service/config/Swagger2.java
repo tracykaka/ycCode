@@ -1,5 +1,6 @@
-package com.rencai.service.user_service.config;
+package com.yingchong.service.data_service.config;
 
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -24,6 +25,7 @@ public class Swagger2 {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.yingchong.service.data_service")) //指定api接口的package
                 .paths(PathSelectors.any())
+                .paths(Predicates.not(PathSelectors.regex("/error.*")))// 错误路径不监控
                 .build();
     }
     private ApiInfo apiInfo() {
