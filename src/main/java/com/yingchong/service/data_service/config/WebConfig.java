@@ -1,4 +1,4 @@
-package com.rencai.service.user_service.config;
+package com.yingchong.service.data_service.config;
 
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.EnvironmentAware;

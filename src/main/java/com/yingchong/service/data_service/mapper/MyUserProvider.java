@@ -1,4 +1,4 @@
-package com.rencai.service.user_service.mapper;
+package com.yingchong.service.data_service.mapper;
 
 import java.util.Map;
 

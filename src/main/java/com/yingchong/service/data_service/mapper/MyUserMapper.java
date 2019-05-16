@@ -9,6 +9,6 @@ import java.util.Map;
 @Repository
 public interface MyUserMapper {
 
-    @SelectProvider(type = com.rencai.service.user_service.mapper.MyUserProvider.class, method = "queryUser")
+    @SelectProvider(type = MyUserProvider.class, method = "queryUser")
     List<Map<String, Object>> queryUser(Map<String, Object> param);
 }
