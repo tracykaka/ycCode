@@ -7,5 +7,5 @@ git pull
 gradle build -x test
 
 JAVA_OPTS="-Xms256M -Xmx512M -Xmn256M -Xss128m -XX:+DisableExplicitGC -XX:MaxTenuringThreshold=15 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSParallelRemarkEnabled -XX:LargePageSizeInBytes=96m -XX:CMSInitiatingOccupancyFraction=75 -Duser.timezone=Asia/Shanghai"
-kill -9 $(netstat -nlp | grep :80 | awk '{print $7}' | awk -F"/" '{ print $1 }')
+kill -9 $(netstat -nlp | grep :8000 | awk '{print $7}' | awk -F"/" '{ print $1 }')
 nohup java -jar build/libs/data-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=$ENV >/dev/null 2>&1 &
