@@ -1,7 +1,9 @@
 package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
+import com.yingchong.service.data_service.BizBean.biz_interTime.BizInterBean;
 import com.yingchong.service.data_service.service.IndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -52,6 +54,32 @@ public class IndexResource {
             @RequestParam("endDate") String endDate
     ){
         return indexService.Flux(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="应用流量", notes="应用流量")
+    @RequestMapping(value={"/App"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizAppBean>> App(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return indexService.App(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="上网时长", notes="上网时长")
+    @RequestMapping(value={"/Inter"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizInterBean>> Inter(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return indexService.Inter(startDate,endDate);
     }
 
     @ApiImplicitParams({

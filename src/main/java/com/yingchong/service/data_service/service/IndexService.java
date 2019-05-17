@@ -1,8 +1,12 @@
 package com.yingchong.service.data_service.service;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
+import com.yingchong.service.data_service.BizBean.biz_interTime.BizInterBean;
+import com.yingchong.service.data_service.mapper.MyAppMapper;
 import com.yingchong.service.data_service.mapper.MyFluxMapper;
+import com.yingchong.service.data_service.mapper.MyInterMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FluxResultMapper;
 import com.yingchong.service.data_service.mybatis.model.FluxResult;
 import com.yingchong.service.data_service.mybatis.model.FluxResultExample;
@@ -22,6 +26,12 @@ public class IndexService {
 
     @Autowired
     private MyFluxMapper myFluxMapper;
+
+    @Autowired
+    private MyInterMapper myInterMapper;
+
+    @Autowired
+    private MyAppMapper myAppMapper;
 
     @Autowired
     private FluxResultMapper fluxResultMapper;
@@ -47,6 +57,38 @@ public class IndexService {
         }
         return new ResponseBean<>(dataList);
     }
+    public ResponseBean<List<BizInterBean>> Inter(String startDate, String endData){
+        int days = DateUtil.differentDays(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), DateUtil.StringToDate(endData,"yyyy-MM-dd"));
+        List<BizInterBean> interList = new ArrayList<>();
+        for (int i = 0; i <= days; i++) {
+            Date date = DateUtil.addDay(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), i);
+            String startDate1 = DateUtil.formatDateStrToString(DateUtil.formatDateToStr(date, "yyyy-MM-dd HH:mm:ss"));
+            String param = startDate1.replaceAll("-","");
+            List<BizInterBean> bizInterBeans = myInterMapper.selectInter( param + "_time_count");
+            BizInterBean bizInterBean = bizInterBeans.get(0);
+            bizInterBean.setDate(startDate1);
+            interList.add(bizInterBean);
+        }
+        return new ResponseBean<>(interList);
+    }
+
+
+    public ResponseBean<List<BizAppBean>> App(String startDate, String endData){
+        int days = DateUtil.differentDays(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), DateUtil.StringToDate(endData,"yyyy-MM-dd"));
+        List<BizAppBean> appList = new ArrayList<>();
+        for (int i = 0; i <= days; i++) {
+            Date date = DateUtil.addDay(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), i);
+            String startDate1 = DateUtil.formatDateStrToString(DateUtil.formatDateToStr(date, "yyyy-MM-dd HH:mm:ss"));
+            String param = startDate1.replaceAll("-","");
+            List<BizAppBean> bizAppBeans = myAppMapper.selectApp( param + "_flux");
+            BizAppBean bizAppBean = bizAppBeans.get(0);
+            bizAppBean.setDate(startDate1);
+            appList.add(bizAppBean);
+        }
+        return new ResponseBean<>(appList);
+    }
+
+
 
     /**
      * 查询结果集,返回给前端数据
