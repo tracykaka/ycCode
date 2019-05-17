@@ -1,7 +1,5 @@
 package com.yingchong.service.data_service.service;
 
-import com.yingchong.service.data_service.BizBean.ResponseBean;
-import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 
 @Component
 @EnableScheduling
@@ -30,7 +27,7 @@ public class TimeTask {
     public void addTodayDropsToBefore(){
         Date nowDate = new Date();
 
-        ResponseBean<List<BizDataBean>> flux = indexService.Flux(DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd"),
-                DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd"));
+        //插入流量每日数据
+        indexService.insertFluxResult(DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd"));
     }
 }

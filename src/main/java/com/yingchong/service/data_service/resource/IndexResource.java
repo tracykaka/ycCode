@@ -3,6 +3,7 @@ package com.yingchong.service.data_service.resource;
 import com.yingchong.service.data_service.BizBean.BizTestBean;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
+import com.yingchong.service.data_service.mybatis.model.FluxResult;
 import com.yingchong.service.data_service.service.IndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,9 +45,22 @@ public class IndexResource {
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
     })
-    @ApiOperation(value="流量", notes="流量")
+    @ApiOperation(value="流量", notes="流量(弃用,参考接口)")
     @RequestMapping(value={"/upFlux"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizDataBean>> Flux(
+    public ResponseBean<List<BizDataBean>> Flux_1(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return indexService.Flux_1(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="流量", notes="流量")
+    @RequestMapping(value={"/Flux"}, method= RequestMethod.GET)
+    public ResponseBean<List<FluxResult>> Flux(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){

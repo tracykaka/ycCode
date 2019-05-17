@@ -4,6 +4,9 @@ import com.yingchong.service.data_service.BizBean.BizTestBean;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.mapper.MyFluxMapper;
+import com.yingchong.service.data_service.mybatis.mapper.FluxResultMapper;
+import com.yingchong.service.data_service.mybatis.model.FluxResult;
+import com.yingchong.service.data_service.mybatis.model.FluxResultExample;
 import com.yingchong.service.data_service.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +19,14 @@ import java.util.List;
 
 @Service
 public class IndexService {
+    private static final Logger logger = LoggerFactory.getLogger(IndexService.class);
 
     @Autowired
     private MyFluxMapper myFluxMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexService.class);
+    @Autowired
+    private FluxResultMapper fluxResultMapper;
+
     public ResponseBean<BizTestBean> testIndex(String param) {
         logger.info("testIndex ... ... ...{}",param);
         BizTestBean bizTestBean = new BizTestBean();
@@ -36,7 +42,7 @@ public class IndexService {
      * @param endData 结束时间 2019-05-15
      * @return
      */
-    public ResponseBean<List<BizDataBean>> Flux(String startDate, String endData) {
+    public ResponseBean<List<BizDataBean>> Flux_1(String startDate, String endData) {
         int days = DateUtil.differentDays(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), DateUtil.StringToDate(endData,"yyyy-MM-dd"));
         List<BizDataBean> dataList = new ArrayList<>();
         for (int i = 0; i <= days; i++) {
@@ -51,4 +57,50 @@ public class IndexService {
         }
         return new ResponseBean<>(dataList);
     }
+
+    /**
+     *
+     * @param startDate 开始时间 2019-05-01
+     * @param endData 结束时间 2019-05-15
+     * @return
+     */
+    public ResponseBean<List<FluxResult>> Flux(String startDate, String endData) {
+        FluxResultExample example = new FluxResultExample();
+        example.createCriteria().andFluxDateBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
+        List<FluxResult> fluxResults = fluxResultMapper.selectByExample(example);
+        return new ResponseBean<>(fluxResults);
+    }
+
+    /**
+     *
+     * @param date 日期 2019-05-17
+     * @return 1
+     */
+    public List<BizDataBean> Flux(String date) {
+        String param = date.replaceAll("-","");
+        return myFluxMapper.selectFlux( param + "_flux");
+    }
+
+    public boolean insertFluxResult(String date) {
+        List<BizDataBean> flux = this.Flux(date);
+        try {
+            for (BizDataBean bizDataBean : flux) {
+                FluxResult fr = new FluxResult();
+                fr.setUpload(Double.parseDouble(bizDataBean.getUploadFlux()));
+                fr.setDownload(Double.parseDouble(bizDataBean.getDownFlux()));
+                fr.setFluxDate(DateUtil.formatStringToDate(bizDataBean.getDate(),"yyyy-MM-dd"));
+                Date nowDate = new Date();
+                fr.setCreateTime(nowDate);
+                fr.setUpdateTime(nowDate);
+                int insert = fluxResultMapper.insert(fr);
+            }
+        } catch (Exception e) {
+            logger.error("insertFluxResult error:",e);
+            return false;
+        }
+        return true;
+    }
+
+
+
 }
