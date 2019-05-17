@@ -2,7 +2,6 @@ package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
-import com.yingchong.service.data_service.mybatis.model.FluxResult;
 import com.yingchong.service.data_service.service.IndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,7 +47,7 @@ public class IndexResource {
     })
     @ApiOperation(value="流量", notes="流量")
     @RequestMapping(value={"/Flux"}, method= RequestMethod.GET)
-    public ResponseBean<List<FluxResult>> Flux(
+    public ResponseBean<List<BizDataBean>> Flux(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){

@@ -54,11 +54,19 @@ public class IndexService {
      * @param endData 结束时间 2019-05-15
      * @return
      */
-    public ResponseBean<List<FluxResult>> Flux(String startDate, String endData) {
+    public ResponseBean<List<BizDataBean>> Flux(String startDate, String endData) {
         FluxResultExample example = new FluxResultExample();
         example.createCriteria().andFluxDateBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
         List<FluxResult> fluxResults = fluxResultMapper.selectByExample(example);
-        return new ResponseBean<>(fluxResults);
+        List<BizDataBean> resultData = new ArrayList<>();
+        for (FluxResult fluxResult : fluxResults) {
+            BizDataBean dataBean = new BizDataBean();
+            dataBean.setDate(DateUtil.formatDateToStr(fluxResult.getFluxDate(),"yyyy-MM-dd"));
+            dataBean.setDownFlux(fluxResult.getDownload().toString());
+            dataBean.setUploadFlux(fluxResult.getUpload().toString());
+            resultData.add(dataBean);
+        }
+        return new ResponseBean<>(resultData);
     }
 
     /**
