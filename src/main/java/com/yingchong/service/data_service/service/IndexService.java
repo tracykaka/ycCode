@@ -1,6 +1,5 @@
 package com.yingchong.service.data_service.service;
 
-import com.yingchong.service.data_service.BizBean.BizTestBean;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.mapper.MyFluxMapper;
@@ -27,15 +26,6 @@ public class IndexService {
     @Autowired
     private FluxResultMapper fluxResultMapper;
 
-    public ResponseBean<BizTestBean> testIndex(String param) {
-        logger.info("testIndex ... ... ...{}",param);
-        BizTestBean bizTestBean = new BizTestBean();
-        bizTestBean.setId("1");
-        bizTestBean.setAge("20");
-        bizTestBean.setName("zhangsan");
-        return new ResponseBean<>(bizTestBean);
-    }
-
     /**
      *
      * @param startDate 开始时间 2019-05-01
@@ -59,7 +49,7 @@ public class IndexService {
     }
 
     /**
-     *
+     * 查询结果集,返回给前端数据
      * @param startDate 开始时间 2019-05-01
      * @param endData 结束时间 2019-05-15
      * @return
@@ -72,16 +62,32 @@ public class IndexService {
     }
 
     /**
-     *
+     * 查询指定日期的原始数据
      * @param date 日期 2019-05-17
      * @return 1
      */
     public List<BizDataBean> Flux(String date) {
         String param = date.replaceAll("-","");
-        return myFluxMapper.selectFlux( param + "_flux");
+        List<BizDataBean> bizDataBeans = myFluxMapper.selectFlux(param + "_flux");
+        for (BizDataBean bizDataBean : bizDataBeans) {
+            bizDataBean.setDate(date);
+        }
+        return bizDataBeans;
     }
 
+    /**
+     * 每日同步数据
+     * @param date
+     * @return
+     */
     public boolean insertFluxResult(String date) {
+        FluxResultExample example = new FluxResultExample();
+        example.createCriteria().andFluxDateEqualTo(DateUtil.StringToDate(date, "yyyy-MM-dd"));
+        List<FluxResult> fluxResults = fluxResultMapper.selectByExample(example);
+        if (fluxResults != null && fluxResults.size() > 0) {
+            logger.info("数据已经插入,不再重复插入");
+            return true;
+        }
         List<BizDataBean> flux = this.Flux(date);
         try {
             for (BizDataBean bizDataBean : flux) {

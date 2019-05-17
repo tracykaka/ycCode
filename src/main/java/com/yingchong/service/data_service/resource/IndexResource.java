@@ -1,6 +1,5 @@
 package com.yingchong.service.data_service.resource;
 
-import com.yingchong.service.data_service.BizBean.BizTestBean;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.mybatis.model.FluxResult;
@@ -31,17 +30,6 @@ public class IndexResource {
     private IndexService indexService;
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "param", value = "param", required = true, dataType = "string", paramType = "query")
-    })
-    @ApiOperation(value="test", notes="test")
-    @RequestMapping(value={"/testIndex"}, method= RequestMethod.GET)
-    public ResponseBean<BizTestBean> testIndex(
-            @RequestParam("param") String param
-    ) {
-        return indexService.testIndex(param);
-    }
-
-    @ApiImplicitParams({
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
     })
@@ -66,4 +54,17 @@ public class IndexResource {
     ){
         return indexService.Flux(startDate,endDate);
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="每日同步数据", notes="每日同步数据")
+    @RequestMapping(value={"/insertFluxResult"}, method= RequestMethod.GET)
+    public ResponseBean<Boolean> insertFluxResult(
+            @RequestParam("date") String date
+    ){
+        boolean b = indexService.insertFluxResult(date);
+        return new ResponseBean<>(b);
+    }
+
 }

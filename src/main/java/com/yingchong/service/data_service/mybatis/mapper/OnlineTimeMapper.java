@@ -7,7 +7,6 @@ import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
 @Repository
 public interface OnlineTimeMapper {
     @SelectProvider(type=OnlineTimeSqlProvider.class, method="countByExample")

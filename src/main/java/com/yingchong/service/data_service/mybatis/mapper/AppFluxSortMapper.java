@@ -7,7 +7,6 @@ import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
 @Repository
 public interface AppFluxSortMapper {
     @SelectProvider(type=AppFluxSortSqlProvider.class, method="countByExample")
