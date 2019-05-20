@@ -2,7 +2,6 @@ package com.yingchong.service.data_service.mybatis.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class AppFluxSortExample {
@@ -106,92 +105,6 @@ public class AppFluxSortExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        protected void addCriterionForJDBCDate(String condition, Date value, String property) {
-            if (value == null) {
-                throw new RuntimeException("Value for " + property + " cannot be null");
-            }
-            addCriterion(condition, new java.sql.Date(value.getTime()), property);
-        }
-
-        protected void addCriterionForJDBCDate(String condition, List<Date> values, String property) {
-            if (values == null || values.size() == 0) {
-                throw new RuntimeException("Value list for " + property + " cannot be null or empty");
-            }
-            List<java.sql.Date> dateList = new ArrayList<java.sql.Date>();
-            Iterator<Date> iter = values.iterator();
-            while (iter.hasNext()) {
-                dateList.add(new java.sql.Date(iter.next().getTime()));
-            }
-            addCriterion(condition, dateList, property);
-        }
-
-        protected void addCriterionForJDBCDate(String condition, Date value1, Date value2, String property) {
-            if (value1 == null || value2 == null) {
-                throw new RuntimeException("Between values for " + property + " cannot be null");
-            }
-            addCriterion(condition, new java.sql.Date(value1.getTime()), new java.sql.Date(value2.getTime()), property);
-        }
-
-        public Criteria andIdIsNull() {
-            addCriterion("id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdIsNotNull() {
-            addCriterion("id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdEqualTo(Integer value) {
-            addCriterion("id =", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdNotEqualTo(Integer value) {
-            addCriterion("id <>", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdGreaterThan(Integer value) {
-            addCriterion("id >", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("id >=", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdLessThan(Integer value) {
-            addCriterion("id <", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
-            addCriterion("id <=", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdIn(List<Integer> values) {
-            addCriterion("id in", values, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdNotIn(List<Integer> values) {
-            addCriterion("id not in", values, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdBetween(Integer value1, Integer value2) {
-            addCriterion("id between", value1, value2, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("id not between", value1, value2, "id");
-            return (Criteria) this;
-        }
-
         public Criteria andAppNameIsNull() {
             addCriterion("app_name is null");
             return (Criteria) this;
@@ -272,123 +185,193 @@ public class AppFluxSortExample {
             return (Criteria) this;
         }
 
-        public Criteria andFluxEqualTo(String value) {
+        public Criteria andFluxEqualTo(Integer value) {
             addCriterion("flux =", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotEqualTo(String value) {
+        public Criteria andFluxNotEqualTo(Integer value) {
             addCriterion("flux <>", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxGreaterThan(String value) {
+        public Criteria andFluxGreaterThan(Integer value) {
             addCriterion("flux >", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxGreaterThanOrEqualTo(String value) {
+        public Criteria andFluxGreaterThanOrEqualTo(Integer value) {
             addCriterion("flux >=", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxLessThan(String value) {
+        public Criteria andFluxLessThan(Integer value) {
             addCriterion("flux <", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxLessThanOrEqualTo(String value) {
+        public Criteria andFluxLessThanOrEqualTo(Integer value) {
             addCriterion("flux <=", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxLike(String value) {
-            addCriterion("flux like", value, "flux");
-            return (Criteria) this;
-        }
-
-        public Criteria andFluxNotLike(String value) {
-            addCriterion("flux not like", value, "flux");
-            return (Criteria) this;
-        }
-
-        public Criteria andFluxIn(List<String> values) {
+        public Criteria andFluxIn(List<Integer> values) {
             addCriterion("flux in", values, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotIn(List<String> values) {
+        public Criteria andFluxNotIn(List<Integer> values) {
             addCriterion("flux not in", values, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxBetween(String value1, String value2) {
+        public Criteria andFluxBetween(Integer value1, Integer value2) {
             addCriterion("flux between", value1, value2, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotBetween(String value1, String value2) {
+        public Criteria andFluxNotBetween(Integer value1, Integer value2) {
             addCriterion("flux not between", value1, value2, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataIsNull() {
-            addCriterion("flux_data is null");
+        public Criteria andFluxPercentageIsNull() {
+            addCriterion("flux_percentage is null");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataIsNotNull() {
-            addCriterion("flux_data is not null");
+        public Criteria andFluxPercentageIsNotNull() {
+            addCriterion("flux_percentage is not null");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataEqualTo(Date value) {
-            addCriterionForJDBCDate("flux_data =", value, "fluxData");
+        public Criteria andFluxPercentageEqualTo(String value) {
+            addCriterion("flux_percentage =", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataNotEqualTo(Date value) {
-            addCriterionForJDBCDate("flux_data <>", value, "fluxData");
+        public Criteria andFluxPercentageNotEqualTo(String value) {
+            addCriterion("flux_percentage <>", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataGreaterThan(Date value) {
-            addCriterionForJDBCDate("flux_data >", value, "fluxData");
+        public Criteria andFluxPercentageGreaterThan(String value) {
+            addCriterion("flux_percentage >", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataGreaterThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("flux_data >=", value, "fluxData");
+        public Criteria andFluxPercentageGreaterThanOrEqualTo(String value) {
+            addCriterion("flux_percentage >=", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataLessThan(Date value) {
-            addCriterionForJDBCDate("flux_data <", value, "fluxData");
+        public Criteria andFluxPercentageLessThan(String value) {
+            addCriterion("flux_percentage <", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataLessThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("flux_data <=", value, "fluxData");
+        public Criteria andFluxPercentageLessThanOrEqualTo(String value) {
+            addCriterion("flux_percentage <=", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataIn(List<Date> values) {
-            addCriterionForJDBCDate("flux_data in", values, "fluxData");
+        public Criteria andFluxPercentageLike(String value) {
+            addCriterion("flux_percentage like", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataNotIn(List<Date> values) {
-            addCriterionForJDBCDate("flux_data not in", values, "fluxData");
+        public Criteria andFluxPercentageNotLike(String value) {
+            addCriterion("flux_percentage not like", value, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("flux_data between", value1, value2, "fluxData");
+        public Criteria andFluxPercentageIn(List<String> values) {
+            addCriterion("flux_percentage in", values, "fluxPercentage");
             return (Criteria) this;
         }
 
-        public Criteria andFluxDataNotBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("flux_data not between", value1, value2, "fluxData");
+        public Criteria andFluxPercentageNotIn(List<String> values) {
+            addCriterion("flux_percentage not in", values, "fluxPercentage");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxPercentageBetween(String value1, String value2) {
+            addCriterion("flux_percentage between", value1, value2, "fluxPercentage");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxPercentageNotBetween(String value1, String value2) {
+            addCriterion("flux_percentage not between", value1, value2, "fluxPercentage");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateIsNull() {
+            addCriterion("flux_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateIsNotNull() {
+            addCriterion("flux_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateEqualTo(String value) {
+            addCriterion("flux_date =", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateNotEqualTo(String value) {
+            addCriterion("flux_date <>", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateGreaterThan(String value) {
+            addCriterion("flux_date >", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateGreaterThanOrEqualTo(String value) {
+            addCriterion("flux_date >=", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateLessThan(String value) {
+            addCriterion("flux_date <", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateLessThanOrEqualTo(String value) {
+            addCriterion("flux_date <=", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateLike(String value) {
+            addCriterion("flux_date like", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateNotLike(String value) {
+            addCriterion("flux_date not like", value, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateIn(List<String> values) {
+            addCriterion("flux_date in", values, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateNotIn(List<String> values) {
+            addCriterion("flux_date not in", values, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateBetween(String value1, String value2) {
+            addCriterion("flux_date between", value1, value2, "fluxDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFluxDateNotBetween(String value1, String value2) {
+            addCriterion("flux_date not between", value1, value2, "fluxDate");
             return (Criteria) this;
         }
 

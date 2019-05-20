@@ -3,25 +3,17 @@ package com.yingchong.service.data_service.mybatis.model;
 import java.util.Date;
 
 public class AppFluxSort {
-    private Integer id;
-
     private String appName;
 
-    private String flux;
+    private Integer flux;
 
-    private Date fluxData;
+    private String fluxPercentage;
+
+    private String fluxDate;
 
     private Date createTime;
 
     private Date updateTime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getAppName() {
         return appName;
@@ -31,20 +23,28 @@ public class AppFluxSort {
         this.appName = appName;
     }
 
-    public String getFlux() {
+    public Integer getFlux() {
         return flux;
     }
 
-    public void setFlux(String flux) {
+    public void setFlux(Integer flux) {
         this.flux = flux;
     }
 
-    public Date getFluxData() {
-        return fluxData;
+    public String getFluxPercentage() {
+        return fluxPercentage;
     }
 
-    public void setFluxData(Date fluxData) {
-        this.fluxData = fluxData;
+    public void setFluxPercentage(String fluxPercentage) {
+        this.fluxPercentage = fluxPercentage;
+    }
+
+    public String getFluxDate() {
+        return fluxDate;
+    }
+
+    public void setFluxDate(String fluxDate) {
+        this.fluxDate = fluxDate;
     }
 
     public Date getCreateTime() {

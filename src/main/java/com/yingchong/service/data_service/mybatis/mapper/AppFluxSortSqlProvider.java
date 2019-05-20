@@ -28,20 +28,20 @@ public class AppFluxSortSqlProvider {
         SQL sql = new SQL();
         sql.INSERT_INTO("app_flux_sort");
         
-        if (record.getId() != null) {
-            sql.VALUES("id", "#{id,jdbcType=INTEGER}");
-        }
-        
         if (record.getAppName() != null) {
             sql.VALUES("app_name", "#{appName,jdbcType=VARCHAR}");
         }
         
         if (record.getFlux() != null) {
-            sql.VALUES("flux", "#{flux,jdbcType=VARCHAR}");
+            sql.VALUES("flux", "#{flux,jdbcType=INTEGER}");
         }
         
-        if (record.getFluxData() != null) {
-            sql.VALUES("flux_data", "#{fluxData,jdbcType=DATE}");
+        if (record.getFluxPercentage() != null) {
+            sql.VALUES("flux_percentage", "#{fluxPercentage,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getFluxDate() != null) {
+            sql.VALUES("flux_date", "#{fluxDate,jdbcType=VARCHAR}");
         }
         
         if (record.getCreateTime() != null) {
@@ -58,13 +58,13 @@ public class AppFluxSortSqlProvider {
     public String selectByExample(AppFluxSortExample example) {
         SQL sql = new SQL();
         if (example != null && example.isDistinct()) {
-            sql.SELECT_DISTINCT("id");
+            sql.SELECT_DISTINCT("app_name");
         } else {
-            sql.SELECT("id");
+            sql.SELECT("app_name");
         }
-        sql.SELECT("app_name");
         sql.SELECT("flux");
-        sql.SELECT("flux_data");
+        sql.SELECT("flux_percentage");
+        sql.SELECT("flux_date");
         sql.SELECT("create_time");
         sql.SELECT("update_time");
         sql.FROM("app_flux_sort");
@@ -84,20 +84,20 @@ public class AppFluxSortSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("app_flux_sort");
         
-        if (record.getId() != null) {
-            sql.SET("id = #{record.id,jdbcType=INTEGER}");
-        }
-        
         if (record.getAppName() != null) {
             sql.SET("app_name = #{record.appName,jdbcType=VARCHAR}");
         }
         
         if (record.getFlux() != null) {
-            sql.SET("flux = #{record.flux,jdbcType=VARCHAR}");
+            sql.SET("flux = #{record.flux,jdbcType=INTEGER}");
         }
         
-        if (record.getFluxData() != null) {
-            sql.SET("flux_data = #{record.fluxData,jdbcType=DATE}");
+        if (record.getFluxPercentage() != null) {
+            sql.SET("flux_percentage = #{record.fluxPercentage,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getFluxDate() != null) {
+            sql.SET("flux_date = #{record.fluxDate,jdbcType=VARCHAR}");
         }
         
         if (record.getCreateTime() != null) {
@@ -116,44 +116,15 @@ public class AppFluxSortSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("app_flux_sort");
         
-        sql.SET("id = #{record.id,jdbcType=INTEGER}");
         sql.SET("app_name = #{record.appName,jdbcType=VARCHAR}");
-        sql.SET("flux = #{record.flux,jdbcType=VARCHAR}");
-        sql.SET("flux_data = #{record.fluxData,jdbcType=DATE}");
+        sql.SET("flux = #{record.flux,jdbcType=INTEGER}");
+        sql.SET("flux_percentage = #{record.fluxPercentage,jdbcType=VARCHAR}");
+        sql.SET("flux_date = #{record.fluxDate,jdbcType=VARCHAR}");
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         
         AppFluxSortExample example = (AppFluxSortExample) parameter.get("example");
         applyWhere(sql, example, true);
-        return sql.toString();
-    }
-
-    public String updateByPrimaryKeySelective(AppFluxSort record) {
-        SQL sql = new SQL();
-        sql.UPDATE("app_flux_sort");
-        
-        if (record.getAppName() != null) {
-            sql.SET("app_name = #{appName,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getFlux() != null) {
-            sql.SET("flux = #{flux,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getFluxData() != null) {
-            sql.SET("flux_data = #{fluxData,jdbcType=DATE}");
-        }
-        
-        if (record.getCreateTime() != null) {
-            sql.SET("create_time = #{createTime,jdbcType=TIMESTAMP}");
-        }
-        
-        if (record.getUpdateTime() != null) {
-            sql.SET("update_time = #{updateTime,jdbcType=TIMESTAMP}");
-        }
-        
-        sql.WHERE("id = #{id,jdbcType=INTEGER}");
-        
         return sql.toString();
     }
 
