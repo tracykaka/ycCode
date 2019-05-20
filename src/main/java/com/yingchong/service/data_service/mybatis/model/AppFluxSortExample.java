@@ -185,52 +185,52 @@ public class AppFluxSortExample {
             return (Criteria) this;
         }
 
-        public Criteria andFluxEqualTo(Integer value) {
+        public Criteria andFluxEqualTo(Double value) {
             addCriterion("flux =", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotEqualTo(Integer value) {
+        public Criteria andFluxNotEqualTo(Double value) {
             addCriterion("flux <>", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxGreaterThan(Integer value) {
+        public Criteria andFluxGreaterThan(Double value) {
             addCriterion("flux >", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxGreaterThanOrEqualTo(Integer value) {
+        public Criteria andFluxGreaterThanOrEqualTo(Double value) {
             addCriterion("flux >=", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxLessThan(Integer value) {
+        public Criteria andFluxLessThan(Double value) {
             addCriterion("flux <", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxLessThanOrEqualTo(Integer value) {
+        public Criteria andFluxLessThanOrEqualTo(Double value) {
             addCriterion("flux <=", value, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxIn(List<Integer> values) {
+        public Criteria andFluxIn(List<Double> values) {
             addCriterion("flux in", values, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotIn(List<Integer> values) {
+        public Criteria andFluxNotIn(List<Double> values) {
             addCriterion("flux not in", values, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxBetween(Integer value1, Integer value2) {
+        public Criteria andFluxBetween(Double value1, Double value2) {
             addCriterion("flux between", value1, value2, "flux");
             return (Criteria) this;
         }
 
-        public Criteria andFluxNotBetween(Integer value1, Integer value2) {
+        public Criteria andFluxNotBetween(Double value1, Double value2) {
             addCriterion("flux not between", value1, value2, "flux");
             return (Criteria) this;
         }

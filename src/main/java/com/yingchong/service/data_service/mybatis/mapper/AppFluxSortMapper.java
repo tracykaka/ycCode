@@ -19,7 +19,7 @@ public interface AppFluxSortMapper {
         "insert into app_flux_sort (app_name, flux, ",
         "flux_percentage, flux_date, ",
         "create_time, update_time)",
-        "values (#{appName,jdbcType=VARCHAR}, #{flux,jdbcType=INTEGER}, ",
+        "values (#{appName,jdbcType=VARCHAR}, #{flux,jdbcType=DOUBLE}, ",
         "#{fluxPercentage,jdbcType=VARCHAR}, #{fluxDate,jdbcType=VARCHAR}, ",
         "#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})"
     })
@@ -31,7 +31,7 @@ public interface AppFluxSortMapper {
     @SelectProvider(type=AppFluxSortSqlProvider.class, method="selectByExample")
     @Results({
         @Result(column="app_name", property="appName", jdbcType=JdbcType.VARCHAR),
-        @Result(column="flux", property="flux", jdbcType=JdbcType.INTEGER),
+        @Result(column="flux", property="flux", jdbcType=JdbcType.DOUBLE),
         @Result(column="flux_percentage", property="fluxPercentage", jdbcType=JdbcType.VARCHAR),
         @Result(column="flux_date", property="fluxDate", jdbcType=JdbcType.VARCHAR),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),

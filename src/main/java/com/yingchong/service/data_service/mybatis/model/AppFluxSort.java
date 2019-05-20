@@ -5,7 +5,7 @@ import java.util.Date;
 public class AppFluxSort {
     private String appName;
 
-    private Integer flux;
+    private Double flux;
 
     private String fluxPercentage;
 
@@ -23,11 +23,11 @@ public class AppFluxSort {
         this.appName = appName;
     }
 
-    public Integer getFlux() {
+    public Double getFlux() {
         return flux;
     }
 
-    public void setFlux(Integer flux) {
+    public void setFlux(Double flux) {
         this.flux = flux;
     }
 

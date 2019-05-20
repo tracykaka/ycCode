@@ -33,7 +33,7 @@ public class AppFluxSortSqlProvider {
         }
         
         if (record.getFlux() != null) {
-            sql.VALUES("flux", "#{flux,jdbcType=INTEGER}");
+            sql.VALUES("flux", "#{flux,jdbcType=DOUBLE}");
         }
         
         if (record.getFluxPercentage() != null) {
@@ -89,7 +89,7 @@ public class AppFluxSortSqlProvider {
         }
         
         if (record.getFlux() != null) {
-            sql.SET("flux = #{record.flux,jdbcType=INTEGER}");
+            sql.SET("flux = #{record.flux,jdbcType=DOUBLE}");
         }
         
         if (record.getFluxPercentage() != null) {
@@ -117,7 +117,7 @@ public class AppFluxSortSqlProvider {
         sql.UPDATE("app_flux_sort");
         
         sql.SET("app_name = #{record.appName,jdbcType=VARCHAR}");
-        sql.SET("flux = #{record.flux,jdbcType=INTEGER}");
+        sql.SET("flux = #{record.flux,jdbcType=DOUBLE}");
         sql.SET("flux_percentage = #{record.fluxPercentage,jdbcType=VARCHAR}");
         sql.SET("flux_date = #{record.fluxDate,jdbcType=VARCHAR}");
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
