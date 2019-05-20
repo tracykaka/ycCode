@@ -191,14 +191,14 @@ public class IndexService {
         OnlineTimeExample example = new OnlineTimeExample();
         example.createCriteria().andResultDateBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
         List<OnlineTime> onlineTimes = onlineTimeMapper.selectByExample(example);
-        List<BizInterBean> resultInterData = new ArrayList<>();
+        List<BizInterBean> resultInter = new ArrayList<>();
         for (OnlineTime onlineTime : onlineTimes) {
             BizInterBean interBean = new BizInterBean();
             interBean.setDate(DateUtil.formatDateToStr(onlineTime.getResultDate(),"yyyy-MM-dd"));
-            interBean.setAvgTime(interBean.getAvgTime());
-            resultInterData.add(interBean);
+            interBean.setAvgTime(onlineTime.getOnlineTime());
+            resultInter.add(interBean);
         }
-        return new ResponseBean<>(resultInterData);
+        return new ResponseBean<>(resultInter);
     }
 
     //应用流量，查询指定日期的原始数据
@@ -248,16 +248,16 @@ public class IndexService {
         //example.createCriteria().andFluxDataBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
         example.createCriteria().andFluxDateBetween(startDate,endData);
         List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
-        List<BizAppBean> resultAppDate = new ArrayList<>();
+        List<BizAppBean> resultApp = new ArrayList<>();
         for (AppFluxSort appFluxSort : appFluxSorts) {
             BizAppBean appBean = new BizAppBean();
             //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
             appBean.setDate(appFluxSort.getFluxDate());
-            appBean.setAppName(appBean.getAppName());
-            appBean.setFlux(appBean.getFlux());
-            appBean.setFluxPercentage(appBean.getFluxPercentage());
-            resultAppDate.add(appBean);
+            appBean.setAppName(appFluxSort.getAppName());
+            appBean.setFlux(appFluxSort.getFlux());
+            appBean.setFluxPercentage(appFluxSort.getFluxPercentage());
+            resultApp.add(appBean);
         }
-        return new ResponseBean<>(resultAppDate);
+        return new ResponseBean<>(resultApp);
     }
 }
