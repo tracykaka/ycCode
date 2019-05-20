@@ -7,12 +7,10 @@ import com.yingchong.service.data_service.BizBean.biz_interTime.BizInterBean;
 import com.yingchong.service.data_service.mapper.MyAppMapper;
 import com.yingchong.service.data_service.mapper.MyFluxMapper;
 import com.yingchong.service.data_service.mapper.MyInterMapper;
+import com.yingchong.service.data_service.mybatis.mapper.AppFluxSortMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FluxResultMapper;
 import com.yingchong.service.data_service.mybatis.mapper.OnlineTimeMapper;
-import com.yingchong.service.data_service.mybatis.model.FluxResult;
-import com.yingchong.service.data_service.mybatis.model.FluxResultExample;
-import com.yingchong.service.data_service.mybatis.model.OnlineTime;
-import com.yingchong.service.data_service.mybatis.model.OnlineTimeExample;
+import com.yingchong.service.data_service.mybatis.model.*;
 import com.yingchong.service.data_service.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,9 @@ public class IndexService {
 
     @Autowired
     private OnlineTimeMapper onlineTimeMapper;
+
+    @Autowired
+    private AppFluxSortMapper appFluxSortMapper;
 
     /**
      *
@@ -77,9 +78,6 @@ public class IndexService {
 //        }
 //        return new ResponseBean<>(interList);
 //    }
-
-
-
 
 
 
@@ -152,23 +150,6 @@ public class IndexService {
     }
 
     //上网时长,查询指定日期的原始数据
-    public ResponseBean<List<BizInterBean>> Inter (String startDate, String endData) {
-        OnlineTimeExample example = new OnlineTimeExample();
-        example.createCriteria().andResultDateBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
-        List<OnlineTime> onlineTimes = onlineTimeMapper.selectByExample(example);
-        List<BizInterBean> resultInterData = new ArrayList<>();
-        for (OnlineTime onlineTime : onlineTimes) {
-            BizInterBean interBean = new BizInterBean();
-            interBean.setDate(DateUtil.formatDateToStr(onlineTime.getResultDate(),"yyyy-MM-dd"));
-            //interBean.setDownFlux(fluxResult.getDownload().toString());
-            interBean.setAvgTime(interBean.getAvgTime());
-            //dataBean.setUploadFlux(fluxResult.getUpload().toString());
-            resultInterData.add(interBean);
-        }
-        return new ResponseBean<>(resultInterData);
-
-    }
-    //上网时长,每日同步数据
     public List<BizInterBean> Inter(String date){
         String param = date.replaceAll("-","");
         List<BizInterBean> bizInterBeans = myInterMapper.selectInter(param + "_time_count");
@@ -177,7 +158,8 @@ public class IndexService {
         }
         return bizInterBeans;
     }
-    //上网时长,查询结果集,返回给前端数据
+
+    //上网时长,每日同步数据
     public boolean insertOnlineTime(String date) {
         OnlineTimeExample example = new OnlineTimeExample();
         example.createCriteria().andResultDateEqualTo(DateUtil.StringToDate(date, "yyyy-MM-dd"));
@@ -189,7 +171,6 @@ public class IndexService {
         List<BizInterBean> inter = this.Inter(date);
         try {
             for (BizInterBean bizInterBean : inter) {
-                FluxResult fr = new FluxResult();
                 OnlineTime ot = new OnlineTime();
                 ot.setOnlineTime(bizInterBean.getAvgTime());
                 ot.setResultDate(DateUtil.formatStringToDate(bizInterBean.getDate(),"yyyy-MM-dd"));
@@ -205,8 +186,78 @@ public class IndexService {
         return true;
     }
 
+    //上网时长,查询结果集,返回给前端数据
+    public ResponseBean<List<BizInterBean>> Inter (String startDate, String endData) {
+        OnlineTimeExample example = new OnlineTimeExample();
+        example.createCriteria().andResultDateBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
+        List<OnlineTime> onlineTimes = onlineTimeMapper.selectByExample(example);
+        List<BizInterBean> resultInterData = new ArrayList<>();
+        for (OnlineTime onlineTime : onlineTimes) {
+            BizInterBean interBean = new BizInterBean();
+            interBean.setDate(DateUtil.formatDateToStr(onlineTime.getResultDate(),"yyyy-MM-dd"));
+            interBean.setAvgTime(interBean.getAvgTime());
+            resultInterData.add(interBean);
+        }
+        return new ResponseBean<>(resultInterData);
+    }
 
+    //应用流量，查询指定日期的原始数据
+    public List<BizAppBean> App(String date) {
+        String param = date.replaceAll("-","");
+        List<BizAppBean> bizAppBeans = myAppMapper.selectApp(param + "_flux");
+            for (BizAppBean bizAppBean : bizAppBeans) {
+                bizAppBean.setDate(date);
+            }
+        return bizAppBeans;
+    }
 
+    //应用流量，每日同步数据
+    public boolean insertAppFluxSort(String date) {
+        AppFluxSortExample example = new AppFluxSortExample();
+        //example.createCriteria().andFluxDateEqualTo(DateUtil.StringToDate(date,"yyyy-MM-dd"));
+        example.createCriteria().andFluxDateEqualTo(date);
+        List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
+        if (appFluxSorts != null && appFluxSorts.size() > 0) {
+            logger.info("数据已经插入,不再重复插入");
+            return true;
+        }
+        List<BizAppBean> app = this.App(date);
+        try {
+            for (BizAppBean bizAppBean : app) {
+                AppFluxSort afs = new AppFluxSort();
+                afs.setAppName(bizAppBean.getAppName());
+                afs.setFlux(bizAppBean.getFlux());
+                afs.setFluxPercentage(bizAppBean.getFluxPercentage());
+                //afs.setFluxData(DateUtil.formatStringToDate(bizAppBean.getDate(),"yyyy-MM-dd"));
+                afs.setFluxDate(date);
+                Date nowDate = new Date();
+                afs.setCreateTime(nowDate);
+                afs.setUpdateTime(nowDate);
+                int insert = appFluxSortMapper.insert(afs);
+            }
+        } catch (Exception e) {
+            logger.error("insertAppFluxSort error:",e);
+            return false;
+        }
+        return true;
+    }
 
-
+    //应用流量,查询结果集,返回给前端数据
+    public ResponseBean<List<BizAppBean>> App (String startDate, String endData) {
+        AppFluxSortExample example = new AppFluxSortExample();
+        //example.createCriteria().andFluxDataBetween(DateUtil.StringToDate(startDate,"yyyy-MM-dd"),DateUtil.StringToDate(endData,"yyyy-MM-dd"));
+        example.createCriteria().andFluxDateBetween(startDate,endData);
+        List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
+        List<BizAppBean> resultAppDate = new ArrayList<>();
+        for (AppFluxSort appFluxSort : appFluxSorts) {
+            BizAppBean appBean = new BizAppBean();
+            //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
+            appBean.setDate(appFluxSort.getFluxDate());
+            appBean.setAppName(appBean.getAppName());
+            appBean.setFlux(appBean.getFlux());
+            appBean.setFluxPercentage(appBean.getFluxPercentage());
+            resultAppDate.add(appBean);
+        }
+        return new ResponseBean<>(resultAppDate);
+    }
 }

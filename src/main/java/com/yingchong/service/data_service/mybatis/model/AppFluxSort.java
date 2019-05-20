@@ -3,6 +3,7 @@ package com.yingchong.service.data_service.mybatis.model;
 import java.util.Date;
 
 public class AppFluxSort {
+
     private String appName;
 
     private Double flux;

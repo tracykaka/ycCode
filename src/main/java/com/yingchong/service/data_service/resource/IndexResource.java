@@ -56,18 +56,18 @@ public class IndexResource {
         return indexService.Flux(startDate,endDate);
     }
 
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
-//            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
-//    })
-//    @ApiOperation(value="应用流量", notes="应用流量")
-//    @RequestMapping(value={"/App"}, method= RequestMethod.GET)
-//    public ResponseBean<List<BizAppBean>> App(
-//            @RequestParam("startDate") String startDate,
-//            @RequestParam("endDate") String endDate
-//    ){
-//        return indexService.App(startDate,endDate);
-//    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="每日同步数据流量", notes="每日同步数据流量")
+    @RequestMapping(value={"/insertFluxResult"}, method= RequestMethod.GET)
+    public ResponseBean<Boolean> insertFluxResult(
+            @RequestParam("date") String date
+    ){
+        boolean b = indexService.insertFluxResult(date);
+        return new ResponseBean<>(b);
+    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
@@ -85,24 +85,37 @@ public class IndexResource {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
     })
-    @ApiOperation(value="每日同步数据流量", notes="每日同步数据流量")
-    @RequestMapping(value={"/insertFluxResult"}, method= RequestMethod.GET)
-    public ResponseBean<Boolean> insertFluxResult(
-            @RequestParam("date") String date
-    ){
-        boolean b = indexService.insertFluxResult(date);
-        return new ResponseBean<>(b);
-    }
-
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
-    })
-    @ApiOperation(value="每日同步数据上网时长", notes="每日同步数据上网时长")
+    @ApiOperation(value="每日同步上网时长", notes="每日同步上网时长")
     @RequestMapping(value={"/insertOnlineTime"}, method= RequestMethod.GET)
     public ResponseBean<Boolean> insertOnlineTime(
             @RequestParam("date") String date
     ){
         boolean b = indexService.insertOnlineTime(date);
+        return new ResponseBean<>(b);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="应用流量", notes="应用流量")
+    @RequestMapping(value={"/App"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizAppBean>> App(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return indexService.App(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="每日同步应用流量", notes="每日同步应用流量")
+    @RequestMapping(value={"/insertAppFluxSort"}, method= RequestMethod.GET)
+    public ResponseBean<Boolean> insertAppFluxSort(
+            @RequestParam("date") String date
+    ){
+        boolean b = indexService.insertAppFluxSort(date);
         return new ResponseBean<>(b);
     }
 

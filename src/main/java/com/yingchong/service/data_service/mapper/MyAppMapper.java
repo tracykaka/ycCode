@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface MyAppMapper {
 
-    @Select("select serv,sum(up_flux+down_flux)/1024/1024/1024 flux from ${tableName} GROUP BY serv ORDER BY flux desc LIMIT 5")
+    @Select("select a.serv appName,a.flux flux,CONCAT(FORMAT(a.flux/b.flux1*100,2),'%') fluxPercentage from (select serv,sum(up_flux+down_flux)/1024/1024/1024 flux from ${tableName} GROUP BY serv ORDER BY flux desc LIMIT 5) a join (select sum(up_flux+down_flux)/1024/1024/1024 flux1 from ${tableName}) b")
     List<BizAppBean> selectApp(@Param("tableName") String tableName);
 
 }
