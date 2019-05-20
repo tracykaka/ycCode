@@ -47,7 +47,7 @@ public class IndexResource {
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
     })
-    @ApiOperation(value="流量", notes="流量")
+    @ApiOperation(value="上、下流量", notes="上、下流量")
     @RequestMapping(value={"/Flux"}, method= RequestMethod.GET)
     public ResponseBean<List<BizDataBean>> Flux(
             @RequestParam("startDate") String startDate,
@@ -60,7 +60,7 @@ public class IndexResource {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
     })
-    @ApiOperation(value="每日同步数据流量", notes="每日同步数据流量")
+    @ApiOperation(value="每日同步上、下流量", notes="每日同步上、下流量")
     @RequestMapping(value={"/insertFluxResult"}, method= RequestMethod.GET)
     public ResponseBean<Boolean> insertFluxResult(
             @RequestParam("date") String date
