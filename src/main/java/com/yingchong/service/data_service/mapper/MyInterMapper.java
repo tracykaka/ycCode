@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface MyInterMapper {
 
-   @Select("select ROUND(SUM(seconds)/3600/COUNT(DISTINCT user)) avgTime from ${tableName}")
+   @Select("select FORMAT((SUM(seconds)/3600/COUNT(DISTINCT user)),2) avgTime from ${tableName}")
     List<BizInterBean> selectInter(@Param("tableName") String tableName);
 
 }
