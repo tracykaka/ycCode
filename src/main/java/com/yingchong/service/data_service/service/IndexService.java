@@ -1,5 +1,6 @@
 package com.yingchong.service.data_service.service;
 
+
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -253,7 +255,7 @@ public class IndexService {
             BizAppBean appBean = new BizAppBean();
             //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
             appBean.setDate(appFluxSort.getFluxDate());
-            appBean.setAppName(appFluxSort.getAppName());
+            appBean.setAppName(new String(appFluxSort.getAppName().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8));
             appBean.setFlux(appFluxSort.getFlux());
             appBean.setFluxPercentage(appFluxSort.getFluxPercentage());
             resultApp.add(appBean);
