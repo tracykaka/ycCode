@@ -68,12 +68,12 @@
 		</filter>
 	</appender>
 
-	<logger name="com.rencai" level="INFO">
+	<logger name="com.yingchong" level="INFO">
 		<appender-ref ref="infoDailyRollingFile" />
 		<appender-ref ref="severeDailyRollingFile" />
 	</logger>
 
-	<logger name="com.rencai" level="DEBUG"/>
+	<logger name="com.yingchong" level="DEBUG"/>
 	
 	<!--log4jdbc -->  
 	<logger name="jdbc.sqltiming" level="debug"/>
