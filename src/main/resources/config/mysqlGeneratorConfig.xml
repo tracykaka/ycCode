@@ -31,9 +31,6 @@
         <javaClientGenerator
                 targetPackage="com.yingchong.service.data_service.mybatis.mapper"
                 targetProject="src/main/java" type="ANNOTATEDMAPPER" />
-
-        <table tableName="online_time" domainObjectName="OnlineTime" />
-        <table tableName="action_type" domainObjectName="ActionType" />
         <table tableName="app_flux_sort" domainObjectName="AppFluxSort" />
         <!-- 根据表生成domain -->
 

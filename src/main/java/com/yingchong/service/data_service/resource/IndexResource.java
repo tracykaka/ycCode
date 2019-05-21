@@ -2,8 +2,10 @@ package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppTypeBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.BizBean.biz_interTime.BizInterBean;
+import com.yingchong.service.data_service.service.AppTypeService;
 import com.yingchong.service.data_service.service.IndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,6 +31,9 @@ public class IndexResource {
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private AppTypeService appTypeService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
@@ -117,6 +122,46 @@ public class IndexResource {
     ){
         boolean b = indexService.insertAppFluxSort(date);
         return new ResponseBean<>(b);
+    }
+
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "date", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="每日同步意识形态分类数据", notes="每日同步意识形态分类数据")
+    @RequestMapping(value={"/insertActionType"}, method= RequestMethod.GET)
+    public ResponseBean<Boolean> insertActionType(
+            @RequestParam("date") String date
+    ){
+        boolean b = appTypeService.insertActionType(date);
+        return new ResponseBean<>(b);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="查询意识形态分类数据", notes="查询意识形态分类数据")
+    @RequestMapping(value={"/actionTypeList"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizAppTypeBean>> actionTypeList(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return appTypeService.actionTypeList(startDate, endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="查询网络行为趋势", notes="查询网络行为趋势")
+    @RequestMapping(value={"/actionTypeTrend"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizAppTypeBean>> actionTypeTrend(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return appTypeService.actionTypeTrend(startDate, endDate);
     }
 
 }
