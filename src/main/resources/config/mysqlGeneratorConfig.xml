@@ -31,7 +31,9 @@
         <javaClientGenerator
                 targetPackage="com.yingchong.service.data_service.mybatis.mapper"
                 targetProject="src/main/java" type="ANNOTATEDMAPPER" />
-        <table tableName="app_flux_sort" domainObjectName="AppFluxSort" />
+        <table tableName="feature_key" domainObjectName="FeatureKey" />
+        <table tableName="feature_url" domainObjectName="FeatureUrl" />
+        <table tableName="religion_times" domainObjectName="ReligionTimes" />
         <!-- 根据表生成domain -->
 
             </context>
