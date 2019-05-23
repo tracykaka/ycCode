@@ -14,11 +14,21 @@ public interface MyActionMapper {
     @Select(" SELECT record_id recordId,`group` `group`,`user` `user`,site site,serv serv,app app, " +
             " result result,host_ip hostIp,dst_ip dstIp,ip_version ipVersion, " +
             " tm_type tmType ,src_port srcPort,serv_port servPort,net_action netAction,record_time recordTime " +
-            " from ${tableName} LIMIT #{start},#{end}")
+            " from ${tableName} LIMIT #{start},#{step}")
     List<BizActionBean> selectAction(
             @Param("tableName") String tableName,
             @Param("start") Integer start,
-            @Param("end") Integer end
+            @Param("step") Integer step
+    );
+
+    @Select(" SELECT record_id recordId, `group` `group`, `user` `user`, site site, serv serv, app app, result result, host_ip hostIp, dst_ip dstIp, ip_version ipVersion, tm_type tmType, src_port srcPort, serv_port servPort, net_action netAction, record_time recordTime " +
+            " from ${tableName} "+
+            " where result LIKE \"%web_url%\" and result not like \"%baidu.com\" and result not LIKE \"%qq.com\" and result not LIKE \"sogou.com\" and result not like \"163.com\" " +
+            " LIMIT #{start},#{step}")
+    List<BizActionBean> selectActionByWhere(
+            @Param("tableName") String tableName,
+            @Param("start") Integer start,
+            @Param("step") Integer step
     );
 
     @Select(" SELECT count(record_id)  from ${tableName}")

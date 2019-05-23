@@ -2,6 +2,9 @@ package com.yingchong.service.data_service.service;
 
 public class BatchCompare {
 
+
+
+
     public void batchTimes(Integer total,Integer step) {
 
         if (step >= total) {//直接执行

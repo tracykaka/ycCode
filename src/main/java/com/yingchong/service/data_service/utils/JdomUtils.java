@@ -44,6 +44,7 @@ public class JdomUtils {
             List list = root.getChildren();
             for (Object o : list) {
                 Element e = (Element) o;
+                if(e.getContentSize()==0) continue;
                 Text t = (Text) e.getContent().get(0);
                 m.put(e.getAttribute("n").getValue(), t.getValue());
             }
