@@ -62,13 +62,15 @@ public class ReligionService {
                             String userVisitUrl = resultMap.get(url);
                             for (FeatureUrl featureUrl : featureUrls) {
                                 //compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
-                            Runnable runnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
-                                }
-                            };
-                            pool.execute(runnable);
+                                Runnable runnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        logger.info("线程启动:{}",bizActionBean.getRecordId());
+                                        compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
+                                        logger.info("线程结束:{}",bizActionBean.getRecordId());
+                                    }
+                                };
+                                pool.execute(runnable);
                             }
                         }
                     }
