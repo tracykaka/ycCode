@@ -23,7 +23,7 @@ public class ReligionService {
 
     private static final Logger logger = LoggerFactory.getLogger(ReligionService.class);
 
-    private Integer start = 0;
+    //private Integer start = 0;
 
     private Integer step = 10000;
 
@@ -49,9 +49,9 @@ public class ReligionService {
         //logger.info("s2=========={}",System.currentTimeMillis());
 
         for (int i = 0; ; i++) {
-            int s1 = start + (i*step);
+            int s1 = (i*step);
             //int s2 = start + (i*step) +step;
-            List<BizActionBean> bizActionBeans = myActionMapper.selectActionByWhere(tableName, s1, step);
+            List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
             //logger.info("s3=========={}",System.currentTimeMillis());
             if(bizActionBeans!=null && bizActionBeans.size() > 0){
                 for (BizActionBean bizActionBean : bizActionBeans) {
@@ -61,16 +61,7 @@ public class ReligionService {
                         if (web_url.equals(s)) {//是请求 web 网站
                             String userVisitUrl = resultMap.get(url);
                             for (FeatureUrl featureUrl : featureUrls) {
-                                //compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
-                                Runnable runnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        logger.info("线程启动:{}",bizActionBean.getRecordId());
-                                        compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
-                                        logger.info("线程结束:{}",bizActionBean.getRecordId());
-                                    }
-                                };
-                                pool.execute(runnable);
+                                compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
                             }
                         }
                     }
