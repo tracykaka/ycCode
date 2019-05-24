@@ -83,10 +83,12 @@ public class ReligionService {
                             compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
                         }
                     }
+                    s = null;
                 }
-
+                resultMap = null;
             }
         }
+        bizActionBeans = null;
     }
 
     private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl) {

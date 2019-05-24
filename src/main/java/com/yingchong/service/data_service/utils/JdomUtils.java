@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +30,15 @@ public class JdomUtils {
      * @throws IOException
      */
     public static Map<String,String> transferXmlToMap(String strxml) {
-        strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");
+        //strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");
         if ("".equals(strxml)) {
             return null;
         }
         Map<String,String> m = new HashMap<>();
         try {
-            InputStream in = new ByteArrayInputStream(strxml.getBytes("UTF-8"));
+            InputStream in = new ByteArrayInputStream(strxml.getBytes(StandardCharsets.UTF_8));
             SAXBuilder builder = new SAXBuilder();
-            Document doc = null;
-            doc = builder.build(in);
+            Document doc = builder.build(in);
             // 解析 DOM
             Element root = doc.getRootElement();
             List list = root.getChildren();
@@ -57,30 +57,37 @@ public class JdomUtils {
         return m;
     }
 
-//    public static void main(String[] args) throws IOException {
-//        String str = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-//                "<_d>\n" +
-//                "  <_f n=\"private_type\">jb</_f>\n" +
-//                "  <_f n=\"is_webapp\">henda</_f>\n" +
-//                "  <_f n=\"line_no\">hhhhh</_f>\n" +
-//                "  <_f n=\"dealed_line_no\">aaaaa</_f>\n" +
-//                "  <_f n=\"urllog_type\">0</_f>\n" +
-//                "  <_f n=\"mac\">64-a0-e7-41-64-41</_f>\n" +
-//                "  <_f n=\"termtype\">ç§»åŠ¨ç»ˆç«¯(Androidç³»ç»Ÿç§»åŠ¨ç»ˆç«¯)</_f>\n" +
-//                "  <_f n=\"nProtocol\">6</_f>\n" +
-//                "  <_f n=\"host\">m.sogo.com</_f>\n" +
-//                "  <_f n=\"trace_t\">web_url</_f>\n" +
-//                "  <_f n=\"urltype\">3858868786</_f>\n" +
-//                "  <_f n=\"urldata\">m.sogo.com/</_f>\n" +
-//                "  <_f n=\"url\">m.sogo.com/</_f>\n" +
-//                "  <_f n=\"usr_name\">10.30.102.80</_f>\n" +
-//                "  <_f n=\"DNS\">get.shouji.sogou.com</_f>\n" +
-//                "</_d>";
-//        Map<String,String> map = transferXmlToMap(str);
+    public static void main(String[] args) throws IOException {
+        long s1 = System.currentTimeMillis();
+        String str = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<_d>\n" +
+                "  <_f n=\"private_type\">jb</_f>\n" +
+                "  <_f n=\"is_webapp\">henda</_f>\n" +
+                "  <_f n=\"line_no\">hhhhh</_f>\n" +
+                "  <_f n=\"dealed_line_no\">aaaaa</_f>\n" +
+                "  <_f n=\"urllog_type\">0</_f>\n" +
+                "  <_f n=\"mac\">64-a0-e7-41-64-41</_f>\n" +
+                "  <_f n=\"termtype\">ç§»åŠ¨ç»ˆç«¯(Androidç³»ç»Ÿç§»åŠ¨ç»ˆç«¯)</_f>\n" +
+                "  <_f n=\"nProtocol\">6</_f>\n" +
+                "  <_f n=\"host\">m.sogo.com</_f>\n" +
+                "  <_f n=\"trace_t\">web_url</_f>\n" +
+                "  <_f n=\"urltype\">3858868786</_f>\n" +
+                "  <_f n=\"urldata\">m.sogo.com/</_f>\n" +
+                "  <_f n=\"url\">m.sogo.com/</_f>\n" +
+                "  <_f n=\"usr_name\">10.30.102.80</_f>\n" +
+                "  <_f n=\"DNS\">get.shouji.sogou.com</_f>\n" +
+                "</_d>";
+        for (int i = 0; i < 10000; i++) {
+
+            Map<String,String> map = transferXmlToMap(str);
+            logger.info("i={}",i);
+        }
+        long s2 = System.currentTimeMillis();
+        logger.info("耗时:{}",s2-s1);
 //        for (Object o : map.keySet()) {
 //            String key = o.toString(); // 拿到键
 //            String val = String.valueOf(map.get(key)); // 拿到值
 //            System.out.println(key + "=====" + val);
 //        }
-//    }
+    }
 }
