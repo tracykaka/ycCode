@@ -43,39 +43,50 @@ public class ReligionService {
         long ss1 = System.currentTimeMillis();
         //logger.info("s1=========={}",System.currentTimeMillis());
         String tableName = date.replaceAll("-", "") + "_action";
-        //RowBounds rowBounds = new RowBounds(0, 10001);
+
         List<FeatureUrl> featureUrls = featureUrlMapper.selectByExample(new FeatureUrlExample());
-        //Integer totalCount = myActionMapper.selectCountAction(tableName);
+        Integer totalCount = myActionMapper.selectCountAction(tableName);
         //logger.info("s2=========={}",System.currentTimeMillis());
-
-        for (int i = 0; ; i++) {
+        int times = totalCount/step + 1;
+        for (int i = 0;i<times; i++) {
             int s1 = (i*step);
-            //int s2 = start + (i*step) +step;
-            List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
-            //logger.info("s3=========={}",System.currentTimeMillis());
-            if(bizActionBeans!=null && bizActionBeans.size() > 0){
-                for (BizActionBean bizActionBean : bizActionBeans) {
-                    Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
-                    if(resultMap!=null){
-                        String s = resultMap.get(trace_t);
-                        if (web_url.equals(s)) {//是请求 web 网站
-                            String userVisitUrl = resultMap.get(url);
-                            for (FeatureUrl featureUrl : featureUrls) {
-                                compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
-                            }
-                        }
-                    }
-
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    batchSQL(tableName, featureUrls, s1);
                 }
-            }else break;
+            };
+            pool.execute(runnable);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}",i,s1);
         }
 
         long ss2 = System.currentTimeMillis();
+        pool.shutdown();
         //logger.info("s5=========={}",System.currentTimeMillis());
         logger.info("接口耗时:{}毫秒",ss2-ss1);
         return true;
+    }
+
+    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1) {
+        logger.info("启动线程{}查询:",s1);
+        List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
+        //logger.info("s3=========={}",System.currentTimeMillis());
+        if(bizActionBeans!=null && bizActionBeans.size() > 0){
+            for (BizActionBean bizActionBean : bizActionBeans) {
+                Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
+                if(resultMap!=null){
+                    String s = resultMap.get(trace_t);
+                    if (web_url.equals(s)) {//是请求 web 网站
+                        String userVisitUrl = resultMap.get(url);
+                        for (FeatureUrl featureUrl : featureUrls) {
+                            compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
     private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl) {
