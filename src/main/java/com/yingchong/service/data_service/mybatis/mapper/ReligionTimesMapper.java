@@ -30,8 +30,8 @@ public interface ReligionTimesMapper {
         "terminal_type, visite_time, ",
         "dns, terminal_detail, ",
         "host_port, protocol, ",
-        "mac_address, update_time, ",
-        "create_time)",
+        "mac_address, times_date, ",
+        "update_time, create_time)",
         "values (#{id,jdbcType=INTEGER}, #{religionName,jdbcType=VARCHAR}, ",
         "#{url,jdbcType=VARCHAR}, #{domainName,jdbcType=VARCHAR}, ",
         "#{webName,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, ",
@@ -39,8 +39,8 @@ public interface ReligionTimesMapper {
         "#{terminalType,jdbcType=VARCHAR}, #{visiteTime,jdbcType=TIMESTAMP}, ",
         "#{dns,jdbcType=VARCHAR}, #{terminalDetail,jdbcType=VARCHAR}, ",
         "#{hostPort,jdbcType=INTEGER}, #{protocol,jdbcType=VARCHAR}, ",
-        "#{macAddress,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, ",
-        "#{createTime,jdbcType=TIMESTAMP})"
+        "#{macAddress,jdbcType=VARCHAR}, #{timesDate,jdbcType=DATE}, ",
+        "#{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})"
     })
     int insert(ReligionTimes record);
 
@@ -64,6 +64,7 @@ public interface ReligionTimesMapper {
         @Result(column="host_port", property="hostPort", jdbcType=JdbcType.INTEGER),
         @Result(column="protocol", property="protocol", jdbcType=JdbcType.VARCHAR),
         @Result(column="mac_address", property="macAddress", jdbcType=JdbcType.VARCHAR),
+        @Result(column="times_date", property="timesDate", jdbcType=JdbcType.DATE),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP)
     })
@@ -72,8 +73,8 @@ public interface ReligionTimesMapper {
     @Select({
         "select",
         "id, religion_name, url, domain_name, web_name, host_ip, det_ip, web_title, terminal_type, ",
-        "visite_time, dns, terminal_detail, host_port, protocol, mac_address, update_time, ",
-        "create_time",
+        "visite_time, dns, terminal_detail, host_port, protocol, mac_address, times_date, ",
+        "update_time, create_time",
         "from religion_times",
         "where id = #{id,jdbcType=INTEGER}"
     })
@@ -93,6 +94,7 @@ public interface ReligionTimesMapper {
         @Result(column="host_port", property="hostPort", jdbcType=JdbcType.INTEGER),
         @Result(column="protocol", property="protocol", jdbcType=JdbcType.VARCHAR),
         @Result(column="mac_address", property="macAddress", jdbcType=JdbcType.VARCHAR),
+        @Result(column="times_date", property="timesDate", jdbcType=JdbcType.DATE),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP)
     })
@@ -123,6 +125,7 @@ public interface ReligionTimesMapper {
           "host_port = #{hostPort,jdbcType=INTEGER},",
           "protocol = #{protocol,jdbcType=VARCHAR},",
           "mac_address = #{macAddress,jdbcType=VARCHAR},",
+          "times_date = #{timesDate,jdbcType=DATE},",
           "update_time = #{updateTime,jdbcType=TIMESTAMP},",
           "create_time = #{createTime,jdbcType=TIMESTAMP}",
         "where id = #{id,jdbcType=INTEGER}"

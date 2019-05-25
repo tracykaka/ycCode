@@ -88,6 +88,10 @@ public class ReligionTimesSqlProvider {
             sql.VALUES("mac_address", "#{macAddress,jdbcType=VARCHAR}");
         }
         
+        if (record.getTimesDate() != null) {
+            sql.VALUES("times_date", "#{timesDate,jdbcType=DATE}");
+        }
+        
         if (record.getUpdateTime() != null) {
             sql.VALUES("update_time", "#{updateTime,jdbcType=TIMESTAMP}");
         }
@@ -120,6 +124,7 @@ public class ReligionTimesSqlProvider {
         sql.SELECT("host_port");
         sql.SELECT("protocol");
         sql.SELECT("mac_address");
+        sql.SELECT("times_date");
         sql.SELECT("update_time");
         sql.SELECT("create_time");
         sql.FROM("religion_times");
@@ -199,6 +204,10 @@ public class ReligionTimesSqlProvider {
             sql.SET("mac_address = #{record.macAddress,jdbcType=VARCHAR}");
         }
         
+        if (record.getTimesDate() != null) {
+            sql.SET("times_date = #{record.timesDate,jdbcType=DATE}");
+        }
+        
         if (record.getUpdateTime() != null) {
             sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         }
@@ -230,6 +239,7 @@ public class ReligionTimesSqlProvider {
         sql.SET("host_port = #{record.hostPort,jdbcType=INTEGER}");
         sql.SET("protocol = #{record.protocol,jdbcType=VARCHAR}");
         sql.SET("mac_address = #{record.macAddress,jdbcType=VARCHAR}");
+        sql.SET("times_date = #{record.timesDate,jdbcType=DATE}");
         sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         
@@ -296,6 +306,10 @@ public class ReligionTimesSqlProvider {
         
         if (record.getMacAddress() != null) {
             sql.SET("mac_address = #{macAddress,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTimesDate() != null) {
+            sql.SET("times_date = #{timesDate,jdbcType=DATE}");
         }
         
         if (record.getUpdateTime() != null) {

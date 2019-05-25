@@ -33,6 +33,8 @@ public class ReligionTimes {
 
     private String macAddress;
 
+    private Date timesDate;
+
     private Date updateTime;
 
     private Date createTime;
@@ -155,6 +157,14 @@ public class ReligionTimes {
 
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
+    }
+
+    public Date getTimesDate() {
+        return timesDate;
+    }
+
+    public void setTimesDate(Date timesDate) {
+        this.timesDate = timesDate;
     }
 
     public Date getUpdateTime() {

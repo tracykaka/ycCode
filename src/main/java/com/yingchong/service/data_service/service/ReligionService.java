@@ -48,7 +48,10 @@ public class ReligionService {
     private MyReligionTimeMapper myReligionTimeMapper;
 
 
+
+
     /**
+     * 宗教信仰访问人次数占比
      * 佛教,基督教,天主教,道教,伊斯兰教,其他
      * @param startDate
      * @param endDate
@@ -162,6 +165,7 @@ public class ReligionService {
             Date date = new Date();
             rt.setCreateTime(date);
             rt.setUpdateTime(date);
+            rt.setTimesDate(date);
             religionTimesMapper.insert(rt);
         }
     }
