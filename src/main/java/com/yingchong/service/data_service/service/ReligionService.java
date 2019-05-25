@@ -1,7 +1,10 @@
 package com.yingchong.service.data_service.service;
 
+import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_action.BizActionBean;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import com.yingchong.service.data_service.mapper.MyActionMapper;
+import com.yingchong.service.data_service.mapper.MyReligionTimeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FeatureUrlMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ReligionTimesMapper;
 import com.yingchong.service.data_service.mybatis.model.FeatureUrl;
@@ -14,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +44,49 @@ public class ReligionService {
     @Autowired
     private ReligionTimesMapper religionTimesMapper;
 
+    @Autowired
+    private MyReligionTimeMapper myReligionTimeMapper;
+
+
+    /**
+     * 佛教,基督教,天主教,道教,伊斯兰教,其他
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public ResponseBean<List<BizReligionPercent>> religionPercent(String startDate,String endDate) {
+        List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionPercent(startDate, endDate);
+        List<BizReligionPercent> result = new ArrayList<>();
+        BizReligionPercent other = new BizReligionPercent();
+        other.setReligionName("其他");
+        double p = 0;
+        for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8));
+            if(religionName.equals("佛教")
+            ||religionName.equals("基督教")
+            ||religionName.equals("天主教")
+            ||religionName.equals("道教")
+            ||religionName.equals("伊斯兰教")){
+                bizReligionPercent.setReligionName(religionName);
+                result.add(bizReligionPercent);
+                p+= bizReligionPercent.getPercentage();
+            }else {
+                other.setVisitTime(other.getVisitTime() + bizReligionPercent.getVisitTime());
+
+            }
+        }
+        other.setPercentage(1-p);
+        result.add(other);
+        return new ResponseBean<>(result);
+    }
+
+
+
+    /**
+     * 插入宗教访问次数结果集
+     * @param date
+     * @return
+     */
     public boolean insertReligionTimes(String date) {
         ExecutorService pool = CompareThread.newCachedThreadPool();
         long ss1 = System.currentTimeMillis();
@@ -109,6 +158,10 @@ public class ReligionService {
             rt.setMacAddress(resultMap.get("mac"));
             rt.setProtocol(resultMap.get("nProtocol"));
             rt.setVisiteTime(bizActionBean.getRecordTime());
+            rt.setTerminalType(resultMap.get("termtype"));
+            Date date = new Date();
+            rt.setCreateTime(date);
+            rt.setUpdateTime(date);
             religionTimesMapper.insert(rt);
         }
     }

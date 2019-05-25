@@ -1,5 +1,7 @@
 package com.yingchong.service.data_service.resource;
 
+import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import com.yingchong.service.data_service.service.ReligionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Api(value="religion_service",tags={""})
 @RestController
@@ -34,6 +37,19 @@ public class ReligionResource {
             @RequestParam("date") String date
     ){
         return religionService.insertReligionTimes(date);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="宗教信仰访问人次数占比", notes="宗教信仰访问人次数占比")
+    @RequestMapping(value={"/religionPercent"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizReligionPercent>> religionPercent(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return religionService.religionPercent(startDate,endDate);
     }
 
 }
