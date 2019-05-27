@@ -1,7 +1,7 @@
 package com.yingchong.service.data_service.service.thread;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +10,7 @@ public class CompareThread {
     public static ExecutorService newCachedThreadPool() {
         return new ThreadPoolExecutor(10, 5000,
                 120L, TimeUnit.SECONDS,
-                new SynchronousQueue<>());
+                new LinkedBlockingQueue<>());
     }
 
     /*public static void main(String[] args) {
