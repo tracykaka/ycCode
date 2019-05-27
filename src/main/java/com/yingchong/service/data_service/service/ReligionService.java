@@ -48,16 +48,30 @@ public class ReligionService {
     private MyReligionTimeMapper myReligionTimeMapper;
 
 
+    /**
+     * 宗教信仰访问趋势图
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return ResponseBean
+     */
+    public ResponseBean<List<BizReligionPercent>> religionTread(String startDate, String endDate) {
+        List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionTread(startDate, endDate);
+        for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8));
+            bizReligionPercent.setReligionName(religionName);
+        }
+        return new ResponseBean<>(bizReligionPercents);
+    }
 
 
     /**
-     * 宗教信仰访问人次数占比
+     * 宗教信仰访问分类
      * 佛教,基督教,天主教,道教,伊斯兰教,其他
-     * @param startDate
-     * @param endDate
-     * @return
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return ResponseBean
      */
-    public ResponseBean<List<BizReligionPercent>> religionPercent(String startDate,String endDate) {
+    public ResponseBean<List<BizReligionPercent>> religionCategory(String startDate,String endDate) {
         List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionPercent(startDate, endDate);
         List<BizReligionPercent> result = new ArrayList<>();
         BizReligionPercent other = new BizReligionPercent();

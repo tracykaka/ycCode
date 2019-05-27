@@ -43,13 +43,26 @@ public class ReligionResource {
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
     })
-    @ApiOperation(value="宗教信仰访问人次数占比", notes="宗教信仰访问人次数占比")
-    @RequestMapping(value={"/religionPercent"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizReligionPercent>> religionPercent(
+    @ApiOperation(value="宗教信仰访问分类", notes="宗教信仰访问分类")
+    @RequestMapping(value={"/religionCategory"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizReligionPercent>> religionCategory(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){
-        return religionService.religionPercent(startDate,endDate);
+        return religionService.religionCategory(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="宗教信仰访问趋势图", notes="宗教信仰访问趋势图")
+    @RequestMapping(value={"/religionTread"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizReligionPercent>> religionTread(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ){
+        return religionService.religionTread(startDate,endDate);
     }
 
 }
