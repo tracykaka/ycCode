@@ -160,7 +160,6 @@ public class ReligionService {
     private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl) {
         //logger.info("userVisitUrl={}, featureUrl={}",userVisitUrl,featureUrl.getUrl());
         if (userVisitUrl.contains(featureUrl.getUrl())) {//对应的宗教行为,插入到结果集
-            logger.info("匹配到宗教行为:{}",userVisitUrl);
             ReligionTimes rt = new ReligionTimes();
             rt.setReligionName(featureUrl.getReligionName());
             rt.setUrl(userVisitUrl);
@@ -180,7 +179,8 @@ public class ReligionService {
             rt.setCreateTime(date);
             rt.setUpdateTime(date);
             rt.setTimesDate(date);
-            religionTimesMapper.insert(rt);
+            int insert = religionTimesMapper.insert(rt);
+            logger.info("匹配到宗教行为:{}, insert={}",userVisitUrl,insert);
         }
     }
 
