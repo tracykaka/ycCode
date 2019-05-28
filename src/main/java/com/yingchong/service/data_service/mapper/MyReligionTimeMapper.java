@@ -1,5 +1,6 @@
 package com.yingchong.service.data_service.mapper;
 
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -25,4 +26,11 @@ public interface MyReligionTimeMapper {
             @Param("startTime") String startTime,
             @Param("endTime") String endTime
     );
+
+    @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time visitTime,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail,\n" +
+            "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC,count(*) visitTimes from religion_times where  GROUP BY url ")
+    List<BizReligionDetailInfo> selectReligionDetail(
+            @Param("religionName") String religionName
+    );
+
 }

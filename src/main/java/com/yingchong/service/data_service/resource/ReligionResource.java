@@ -1,6 +1,7 @@
 package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import com.yingchong.service.data_service.service.ReligionService;
 import io.swagger.annotations.Api;
@@ -63,6 +64,17 @@ public class ReligionResource {
             @RequestParam("endDate") String endDate
     ){
         return religionService.religionTread(startDate,endDate);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "religionName", value = "宗教名称", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
+    @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(
+            @RequestParam("religionName") String religionName
+    ){
+        return religionService.religionDetail(religionName);
     }
 
 }

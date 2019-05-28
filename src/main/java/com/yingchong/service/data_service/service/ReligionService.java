@@ -2,6 +2,7 @@ package com.yingchong.service.data_service.service;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_action.BizActionBean;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import com.yingchong.service.data_service.mapper.MyActionMapper;
 import com.yingchong.service.data_service.mapper.MyReligionTimeMapper;
@@ -47,6 +48,16 @@ public class ReligionService {
     @Autowired
     private MyReligionTimeMapper myReligionTimeMapper;
 
+
+    /**
+     * 查询宗教信息详情
+     * @param religionName 宗教名称
+     * @return ResponseBean<List<BizReligionDetailInfo>>
+     */
+    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(String religionName) {
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(religionName);
+        return new ResponseBean<>(bizReligionDetailInfos);
+    }
 
     /**
      * 宗教信仰访问趋势图
@@ -116,13 +127,8 @@ public class ReligionService {
         int times = totalCount/step + 1;
         for (int i = 0;i<times; i++) {
             int s1 = (i*step);
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    batchSQL(tableName, featureUrls, s1);
-                }
-            };
-            pool.execute(runnable);
+            batchSQL(tableName, featureUrls, s1);
+            //executeJob(pool, tableName, featureUrls, s1);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}",i,s1);
         }
@@ -132,6 +138,16 @@ public class ReligionService {
         //logger.info("s5=========={}",System.currentTimeMillis());
         logger.info("接口耗时:{}毫秒",ss2-ss1);
         return true;
+    }
+
+    private void executeJob(ExecutorService pool, String tableName, List<FeatureUrl> featureUrls, int s1) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                batchSQL(tableName, featureUrls, s1);
+            }
+        };
+        pool.execute(runnable);
     }
 
     private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1) {
@@ -159,6 +175,7 @@ public class ReligionService {
 
     private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl) {
         //logger.info("userVisitUrl={}, featureUrl={}",userVisitUrl,featureUrl.getUrl());
+        //if(userVisitUrl.contains("baidu.com"))
         if (userVisitUrl.contains(featureUrl.getUrl())) {//对应的宗教行为,插入到结果集
             ReligionTimes rt = new ReligionTimes();
             rt.setReligionName(featureUrl.getReligionName());
