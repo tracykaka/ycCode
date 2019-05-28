@@ -48,27 +48,43 @@ public class ReligionService {
     @Autowired
     private MyReligionTimeMapper myReligionTimeMapper;
 
-
     /**
-     * 查询宗教信息详情
-     * @param religionName 宗教名称
+     * 宗教信仰url网址访问TOP N 分页
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @param topN top n
      * @return ResponseBean<List<BizReligionDetailInfo>>
      */
-    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(String religionName) {
-        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(religionName);
+    public ResponseBean<List<BizReligionDetailInfo>> religionRank(String startDate,String endDate,Integer topN) {
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionUrlRank(startDate, endDate, topN);
+        return new ResponseBean<>(bizReligionDetailInfos);
+    }
+
+
+    /**
+     * 查询宗教信息详情 分页
+     * @param religionName 宗教名称
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return ResponseBean<List < BizReligionDetailInfo>>
+     */
+    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(
+            String religionName,String startDate,String endDate) {
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(religionName,startDate,endDate);
         return new ResponseBean<>(bizReligionDetailInfos);
     }
 
     /**
      * 宗教信仰访问趋势图
+     *
      * @param startDate 开始时间
-     * @param endDate 结束时间
+     * @param endDate   结束时间
      * @return ResponseBean
      */
     public ResponseBean<List<BizReligionPercent>> religionTread(String startDate, String endDate) {
         List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionTread(startDate, endDate);
         for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
-            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8));
+            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
             bizReligionPercent.setReligionName(religionName);
         }
         return new ResponseBean<>(bizReligionPercents);
@@ -78,40 +94,41 @@ public class ReligionService {
     /**
      * 宗教信仰访问分类
      * 佛教,基督教,天主教,道教,伊斯兰教,其他
+     *
      * @param startDate 开始时间
-     * @param endDate 结束时间
+     * @param endDate   结束时间
      * @return ResponseBean
      */
-    public ResponseBean<List<BizReligionPercent>> religionCategory(String startDate,String endDate) {
+    public ResponseBean<List<BizReligionPercent>> religionCategory(String startDate, String endDate) {
         List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionPercent(startDate, endDate);
         List<BizReligionPercent> result = new ArrayList<>();
         BizReligionPercent other = new BizReligionPercent();
         other.setReligionName("其他");
         double p = 0;
         for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
-            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8));
-            if(religionName.equals("佛教")
-            ||religionName.equals("基督教")
-            ||religionName.equals("天主教")
-            ||religionName.equals("道教")
-            ||religionName.equals("伊斯兰教")){
+            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            if (religionName.equals("佛教")
+                    || religionName.equals("基督教")
+                    || religionName.equals("天主教")
+                    || religionName.equals("道教")
+                    || religionName.equals("伊斯兰教")) {
                 bizReligionPercent.setReligionName(religionName);
                 result.add(bizReligionPercent);
-                p+= bizReligionPercent.getPercentage();
-            }else {
+                p += bizReligionPercent.getPercentage();
+            } else {
                 other.setVisitTime(other.getVisitTime() + bizReligionPercent.getVisitTime());
 
             }
         }
-        other.setPercentage(1-p);
+        other.setPercentage(1 - p);
         result.add(other);
         return new ResponseBean<>(result);
     }
 
 
-
     /**
      * 插入宗教访问次数结果集
+     *
      * @param date
      * @return
      */
@@ -124,19 +141,19 @@ public class ReligionService {
         List<FeatureUrl> featureUrls = featureUrlMapper.selectByExample(new FeatureUrlExample());
         Integer totalCount = myActionMapper.selectCountAction(tableName);
         //logger.info("s2=========={}",System.currentTimeMillis());
-        int times = totalCount/step + 1;
-        for (int i = 0;i<times; i++) {
-            int s1 = (i*step);
+        int times = totalCount / step + 1;
+        for (int i = 0; i < times; i++) {
+            int s1 = (i * step);
             batchSQL(tableName, featureUrls, s1);
             //executeJob(pool, tableName, featureUrls, s1);
             //logger.info("s4=========={}",System.currentTimeMillis());
-            logger.info("i={},s1={}",i,s1);
+            logger.info("i={},s1={}", i, s1);
         }
 
         long ss2 = System.currentTimeMillis();
         pool.shutdown();
         //logger.info("s5=========={}",System.currentTimeMillis());
-        logger.info("接口耗时:{}毫秒",ss2-ss1);
+        logger.info("接口耗时:{}毫秒", ss2 - ss1);
         return true;
     }
 
@@ -151,13 +168,13 @@ public class ReligionService {
     }
 
     private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1) {
-        logger.info("启动线程{}查询:",s1);
+        logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
-        if(bizActionBeans!=null && bizActionBeans.size() > 0){
+        if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
                 Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
-                if(resultMap!=null){
+                if (resultMap != null) {
                     String s = resultMap.get(trace_t);
                     if (web_url.equals(s)) {//是请求 web 网站
                         String userVisitUrl = resultMap.get(url);
@@ -197,7 +214,7 @@ public class ReligionService {
             rt.setUpdateTime(date);
             rt.setTimesDate(date);
             int insert = religionTimesMapper.insert(rt);
-            logger.info("匹配到宗教行为:{}, insert={}",userVisitUrl,insert);
+            logger.info("匹配到宗教行为:{}, insert={}", userVisitUrl, insert);
         }
     }
 

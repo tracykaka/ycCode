@@ -67,14 +67,32 @@ public class ReligionResource {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "religionName", value = "宗教名称", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "religionName", value = "宗教名称", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
     })
     @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
     @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
     public ResponseBean<List<BizReligionDetailInfo>> religionDetail(
-            @RequestParam("religionName") String religionName
+            @RequestParam("religionName") String religionName,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
     ){
-        return religionService.religionDetail(religionName);
+        return religionService.religionDetail(religionName,startDate,endDate);
+    }
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "topN", value = "取几个", required = true, dataType = "string", paramType = "query")
+    })
+    @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
+    @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
+    public ResponseBean<List<BizReligionDetailInfo>> religionRank(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("topN") Integer topN
+    ){
+        return religionService.religionRank(startDate,endDate,topN);
     }
 
 }
