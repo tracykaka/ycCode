@@ -1,5 +1,7 @@
 package com.yingchong.service.data_service.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_action.BizActionBean;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
@@ -52,12 +54,15 @@ public class ReligionService {
      * 宗教信仰url网址访问TOP N 分页
      * @param startDate 开始时间
      * @param endDate 结束时间
-     * @param topN top n
      * @return ResponseBean<List<BizReligionDetailInfo>>
      */
-    public ResponseBean<List<BizReligionDetailInfo>> religionRank(String startDate,String endDate,Integer topN) {
-        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionUrlRank(startDate, endDate, topN);
-        return new ResponseBean<>(bizReligionDetailInfos);
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> religionRank(
+            String startDate,String endDate,
+            Integer page,Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionUrlRank(startDate, endDate);
+        PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
+        return new ResponseBean<>(data);
     }
 
 
@@ -68,10 +73,13 @@ public class ReligionService {
      * @param endDate 结束时间
      * @return ResponseBean<List < BizReligionDetailInfo>>
      */
-    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(
-            String religionName,String startDate,String endDate) {
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> religionDetail(
+            String religionName,String startDate,String endDate,
+            Integer page,Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
         List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(religionName,startDate,endDate);
-        return new ResponseBean<>(bizReligionDetailInfos);
+        PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
+        return new ResponseBean<>(data);
     }
 
     /**

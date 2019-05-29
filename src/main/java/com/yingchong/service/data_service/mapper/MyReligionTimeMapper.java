@@ -40,11 +40,10 @@ public interface MyReligionTimeMapper {
     @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time visitTime,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail,\n" +
             "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC,count(*) visitTimes from religion_times\n" +
             "where times_date >= #{startDate} and times_date <= #{endDate} " +
-            "GROUP BY url order by visitTimes desc limit #{topN} ")
+            "GROUP BY url order by visitTimes desc ")
     List<BizReligionDetailInfo> selectReligionUrlRank(
             @Param("startDate") String startDate,
-            @Param("endDate") String endDate,
-            @Param("topN") Integer topN
+            @Param("endDate") String endDate
     );
 
 

@@ -1,5 +1,6 @@
 package com.yingchong.service.data_service.resource;
 
+import com.github.pagehelper.PageInfo;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
@@ -69,30 +70,37 @@ public class ReligionResource {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "religionName", value = "宗教名称", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
     })
     @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
     @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizReligionDetailInfo>> religionDetail(
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> religionDetail(
             @RequestParam("religionName") String religionName,
             @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate
+            @RequestParam("endDate") String endDate,
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize
     ){
-        return religionService.religionDetail(religionName,startDate,endDate);
+        return religionService.religionDetail(religionName,startDate,endDate,page,pageSize);
     }
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "topN", value = "取几个", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
     })
     @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
     @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizReligionDetailInfo>> religionRank(
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> religionRank(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate,
-            @RequestParam("topN") Integer topN
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize
     ){
-        return religionService.religionRank(startDate,endDate,topN);
+        return religionService.religionRank(startDate,endDate,page,pageSize);
     }
 
 }
