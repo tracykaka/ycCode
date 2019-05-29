@@ -123,4 +123,23 @@ public class ReligionResource {
         return religionService.peopleVisitTimes(user,startDate,endDate,page,pageSize);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user", value = "用户名,ip", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
+    })
+    @ApiOperation(value="详细信息,访问网站的详细信息,点击类别,右边的详细信息", notes="详细信息,访问网站的详细信息")
+    @RequestMapping(value={"/peopleVisitTimes"}, method= RequestMethod.GET)
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimesDetail(
+            @RequestParam(value = "user",required = false) String user,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize
+    ){
+        return religionService.peopleVisitTimesDetail(user,startDate,endDate,page,pageSize);
+    }
+
 }

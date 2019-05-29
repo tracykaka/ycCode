@@ -16,8 +16,7 @@ public class TimeTask {
     private static final Logger logger = LoggerFactory.getLogger(TimeTask.class);
 
     @Autowired
-    private IndexService indexService;
-
+    private CalculateDataService calculateDataService;
 
     /**
      * 更新今天的步数到之前的步数
@@ -26,8 +25,7 @@ public class TimeTask {
     @Scheduled(cron = "0 0 0 1/1 * ?")
     public void addTodayDropsToBefore(){
         Date nowDate = new Date();
-
-        //插入流量每日数据
-        indexService.insertFluxResult(DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd"));
+        String date = DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd");
+        calculateDataService.TimeTask(date);
     }
 }

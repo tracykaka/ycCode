@@ -13,7 +13,9 @@ import com.yingchong.service.data_service.mybatis.mapper.ReligionTimesMapper;
 import com.yingchong.service.data_service.mybatis.model.FeatureUrl;
 import com.yingchong.service.data_service.mybatis.model.FeatureUrlExample;
 import com.yingchong.service.data_service.mybatis.model.ReligionTimes;
+import com.yingchong.service.data_service.mybatis.model.ReligionTimesExample;
 import com.yingchong.service.data_service.service.thread.CompareThread;
+import com.yingchong.service.data_service.utils.DateUtil;
 import com.yingchong.service.data_service.utils.JdomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,6 +183,14 @@ public class ReligionService {
      * @return
      */
     public boolean insertReligionTimes(String date) {
+        ReligionTimesExample example = new ReligionTimesExample();
+        example.createCriteria().andTimesDateEqualTo(DateUtil.StringToDate(date,AppTypeService.dateParttern));
+        long l = religionTimesMapper.countByExample(example);
+        if (l > 0) {
+            logger.info("已经导入过数据:{}",l);
+            return true;
+        }
+
         ExecutorService pool = CompareThread.newCachedThreadPool();
         long ss1 = System.currentTimeMillis();
         //logger.info("s1=========={}",System.currentTimeMillis());
