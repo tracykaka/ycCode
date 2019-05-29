@@ -59,19 +59,36 @@ public class JdomUtils {
 
     public static void main(String[] args) throws IOException {
         long s1 = System.currentTimeMillis();
-        String str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><_d><_f n=\"private_type\">jb</_f><_f n=\"is_webapp\">henda</_f><_f n=\"line_no\">hhhhh</_f><_f n=\"dealed_line_no\">aaaaa</_f><_f n=\"urllog_type\">0</_f> <_f n=\"mac\">64-a0-e7-41-64-41</_f><_f n=\"termtype\">ç§»åŠ¨ç»ˆç«¯(Androidç³»ç»Ÿç§»åŠ¨ç»ˆç«¯)</_f><_f n=\"nProtocol\">6</_f><_f n=\"host\">m.sogo.com</_f><_f n=\"trace_t\">web_url</_f><_f n=\"urltype\">3858868786</_f><_f n=\"urldata\">m.sogo.com/</_f><_f n=\"url\">m.sogo.com/</_f><_f n=\"usr_name\">10.30.102.80</_f><_f n=\"DNS\">get.shouji.sogou.com</_f></_d>";
+        String str = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<_d>\n" +
+                "  <_f n=\"private_type\">jb</_f>\n" +
+                "  <_f n=\"is_webapp\">henda</_f>\n" +
+                "  <_f n=\"line_no\">hhhhh</_f>\n" +
+                "  <_f n=\"dealed_line_no\">aaaaa</_f>\n" +
+                "  <_f n=\"urllog_type\">0</_f>\n" +
+                "  <_f n=\"mac\">64-a0-e7-41-64-41</_f>\n" +
+                "  <_f n=\"termtype\">ç§»åŠ¨ç»ˆç«¯(Androidç³»ç»Ÿç§»åŠ¨ç»ˆç«¯)</_f>\n" +
+                "  <_f n=\"nProtocol\">6</_f>\n" +
+                "  <_f n=\"host\">m.sogo.com</_f>\n" +
+                "  <_f n=\"trace_t\">web_url</_f>\n" +
+                "  <_f n=\"urltype\">3858868786</_f>\n" +
+                "  <_f n=\"urldata\">m.sogo.com/</_f>\n" +
+                "  <_f n=\"url\">m.sogo.com/</_f>\n" +
+                "  <_f n=\"usr_name\">10.30.102.80</_f>\n" +
+                "  <_f n=\"DNS\">get.shouji.sogou.com</_f>\n" +
+                "</_d>";
 //        for (int i = 0; i < 10000; i++) {
 //
-//            Map<String,String> map = transferXmlToMap(str);
+//            Map<String,String> map = transferXmlToMap(string);
 //            logger.info("i={}",i);
 //        }
-        Map<String,String> map = transferXmlToMap(str);
         long s2 = System.currentTimeMillis();
+        Map<String,String> map = transferXmlToMap(string);
         logger.info("耗时:{}",s2-s1);
-        for (Object o : map.keySet()) {
-            String key = o.toString(); // 拿到键
-            String val = String.valueOf(map.get(key)); // 拿到值
-            System.out.println(key + "=====" + val);
-        }
+//        for (Object o : map.keySet()) {
+//            String key = o.toString(); // 拿到键
+//            String val = String.valueOf(map.get(key)); // 拿到值
+//            System.out.println(key + "=====" + val);
+//        }
     }
 }
