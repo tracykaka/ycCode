@@ -92,8 +92,8 @@ public class ReligionResource {
             @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
     })
-    @ApiOperation(value="查询宗教信息详情", notes="查询宗教信息详情")
-    @RequestMapping(value={"/religionDetail"}, method= RequestMethod.GET)
+    @ApiOperation(value="宗教信仰url网址访问TOP N 分页", notes="pageSize 相当于 N")
+    @RequestMapping(value={"/religionRank"}, method= RequestMethod.GET)
     public ResponseBean<PageInfo<BizReligionDetailInfo>> religionRank(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate,
