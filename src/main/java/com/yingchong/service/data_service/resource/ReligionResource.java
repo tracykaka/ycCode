@@ -103,4 +103,24 @@ public class ReligionResource {
         return religionService.religionRank(startDate,endDate,page,pageSize);
     }
 
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user", value = "用户名,ip", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "startDate", value = "startDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "endDate", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
+    })
+    @ApiOperation(value="宗教信仰个人访问次数TOP3 分页", notes="按人统计,统计每个人访问次数,进行排序 pageSize 相当于 N")
+    @RequestMapping(value={"/peopleVisitTimes"}, method= RequestMethod.GET)
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimes(
+            @RequestParam(value = "user",required = false) String user,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize
+    ){
+        return religionService.peopleVisitTimes(user,startDate,endDate,page,pageSize);
+    }
+
 }

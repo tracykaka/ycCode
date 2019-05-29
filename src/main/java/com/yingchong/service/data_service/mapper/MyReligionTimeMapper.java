@@ -4,6 +4,7 @@ import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetail
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -47,4 +48,21 @@ public interface MyReligionTimeMapper {
     );
 
 
+    @SelectProvider(type = MyReligionTimeProvider.class, method = "selectPeopleVisitTimes")
+    List<BizReligionDetailInfo> selectPeopleVisitTimes(
+            @Param("user") String user,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
+    );
+
+
+    @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time visitTime,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail,\n" +
+            "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC from religion_times\n" +
+            "where times_date >= #{startDate} and times_date <= #{endDate} and host_ip = #{user}\n" +
+            "order by visitTime desc ;")
+    List<BizReligionDetailInfo> peopleVisitTimesDetail(
+            @Param("user") String user,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
+    );
 }
