@@ -30,6 +30,7 @@ public interface FluxResultMapper {
         "#{download,jdbcType=DOUBLE}, #{fluxDate,jdbcType=DATE}, ",
         "#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insert(FluxResult record);
 
     @InsertProvider(type=FluxResultSqlProvider.class, method="insertSelective")

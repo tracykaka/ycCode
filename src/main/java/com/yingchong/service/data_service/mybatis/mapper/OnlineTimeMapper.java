@@ -29,6 +29,7 @@ public interface OnlineTimeMapper {
         "#{resultDate,jdbcType=DATE}, #{createTime,jdbcType=TIMESTAMP}, ",
         "#{updateTime,jdbcType=TIMESTAMP})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insert(OnlineTime record);
 
     @InsertProvider(type=OnlineTimeSqlProvider.class, method="insertSelective")

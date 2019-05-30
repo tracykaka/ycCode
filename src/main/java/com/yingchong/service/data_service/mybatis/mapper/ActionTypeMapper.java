@@ -29,6 +29,7 @@ public interface ActionTypeMapper {
         "#{actionCount,jdbcType=INTEGER}, #{actionDate,jdbcType=DATE}, ",
         "#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insert(ActionType record);
 
     @InsertProvider(type=ActionTypeSqlProvider.class, method="insertSelective")

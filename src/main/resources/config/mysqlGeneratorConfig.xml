@@ -31,7 +31,7 @@
         <javaClientGenerator
                 targetPackage="com.yingchong.service.data_service.mybatis.mapper"
                 targetProject="src/main/java" type="ANNOTATEDMAPPER" />
-        <table tableName="religion_times" domainObjectName="ReligionTimes" />
+        <table tableName="user" domainObjectName="User" />
         <!-- 根据表生成domain -->
 
             </context>

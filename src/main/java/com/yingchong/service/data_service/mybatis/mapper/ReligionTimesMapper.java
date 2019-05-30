@@ -42,6 +42,7 @@ public interface ReligionTimesMapper {
         "#{macAddress,jdbcType=VARCHAR}, #{timesDate,jdbcType=DATE}, ",
         "#{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insert(ReligionTimes record);
 
     @InsertProvider(type=ReligionTimesSqlProvider.class, method="insertSelective")
