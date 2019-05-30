@@ -82,8 +82,9 @@ public class JdomUtils {
 //            Map<String,String> map = transferXmlToMap(string);
 //            logger.info("i={}",i);
 //        }
+        
         long s2 = System.currentTimeMillis();
-        Map<String,String> map = transferXmlToMap(string);
+        //Map<String,String> map = transferXmlToMap(str);
         logger.info("耗时:{}",s2-s1);
 //        for (Object o : map.keySet()) {
 //            String key = o.toString(); // 拿到键
