@@ -22,7 +22,7 @@ public class CalculateDataService {
 
     public void calculDate() {
         LocalDate today = LocalDate.now();
-        LocalDate endDate = LocalDate.of(2018, 9, 1);
+        LocalDate endDate = LocalDate.of(2018, 10, 3);
         for (LocalDate date = today.minusDays(1); date.isAfter(endDate); date = date.minusDays(1))
         {
             logger.info("计算:{}的数据",date);
