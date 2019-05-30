@@ -13,7 +13,9 @@ import com.yingchong.service.data_service.mybatis.mapper.ReligionTimesMapper;
 import com.yingchong.service.data_service.mybatis.model.FeatureUrl;
 import com.yingchong.service.data_service.mybatis.model.FeatureUrlExample;
 import com.yingchong.service.data_service.mybatis.model.ReligionTimes;
+import com.yingchong.service.data_service.mybatis.model.ReligionTimesExample;
 import com.yingchong.service.data_service.service.thread.CompareThread;
+import com.yingchong.service.data_service.utils.DateUtil;
 import com.yingchong.service.data_service.utils.JdomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,46 @@ public class ReligionService {
 
     @Autowired
     private MyReligionTimeMapper myReligionTimeMapper;
+
+    /***
+     * 详细信息,访问网站的详细信息
+     * @param user
+     * @param startDate
+     * @param endDate
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimesDetail(
+            String user,
+            String startDate,String endDate,
+            Integer page,Integer pageSize
+    ) {
+        PageHelper.startPage(page, pageSize);
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.peopleVisitTimesDetail(user, startDate, endDate);
+        PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
+        return new ResponseBean<>(data);
+    }
+
+    /**
+     * 按人统计,统计每个人访问次数,进行排序
+     * 宗教信仰个人访问次数TOP N
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @param page 页码
+     * @param pageSize 每页条数
+     * @return
+     */
+    public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimes(
+            String user,
+            String startDate,String endDate,
+            Integer page,Integer pageSize
+    ) {
+        PageHelper.startPage(page, pageSize);
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectPeopleVisitTimes(user,startDate, endDate);
+        PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
+        return new ResponseBean<>(data);
+    }
 
     /**
      * 宗教信仰url网址访问TOP N 分页
@@ -141,6 +183,14 @@ public class ReligionService {
      * @return
      */
     public boolean insertReligionTimes(String date) {
+        ReligionTimesExample example = new ReligionTimesExample();
+        example.createCriteria().andTimesDateEqualTo(DateUtil.StringToDate(date,AppTypeService.dateParttern));
+        long l = religionTimesMapper.countByExample(example);
+        if (l > 0) {
+            logger.info("已经导入过数据:{}",l);
+            return true;
+        }
+
         ExecutorService pool = CompareThread.newCachedThreadPool();
         long ss1 = System.currentTimeMillis();
         //logger.info("s1=========={}",System.currentTimeMillis());
