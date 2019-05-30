@@ -131,7 +131,7 @@ public class ReligionResource {
             @ApiImplicitParam(name = "pageSize", value = "页码条数", required = true, dataType = "int", paramType = "query")
     })
     @ApiOperation(value="详细信息,访问网站的详细信息,点击类别,右边的详细信息", notes="详细信息,访问网站的详细信息")
-    @RequestMapping(value={"/peopleVisitTimes"}, method= RequestMethod.GET)
+    @RequestMapping(value={"/peopleVisitTimesDetail"}, method= RequestMethod.GET)
     public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimesDetail(
             @RequestParam(value = "user",required = false) String user,
             @RequestParam("startDate") String startDate,
