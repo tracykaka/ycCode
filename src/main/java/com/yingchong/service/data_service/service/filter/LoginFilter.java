@@ -80,7 +80,7 @@ public class LoginFilter implements Filter {
             }
             //logger.info("token={},redisUtils={},env={}",token,redisUtils,env);
             String s = String.valueOf(session.getAttribute(token.toString()));
-            if(s!=null && !s.isEmpty()){
+            if(s!=null && !s.isEmpty() && !"null".equals(s)){
                 chain.doFilter(request, response);
             }else {
                 logger.info("未登录--" + requestURI);
