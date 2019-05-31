@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,21 +68,6 @@ public class IndexService {
         }
         return new ResponseBean<>(dataList);
     }
-//    public ResponseBean<List<BizInterBean>> Inter(String startDate, String endData){
-//        int days = DateUtil.differentDays(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), DateUtil.StringToDate(endData,"yyyy-MM-dd"));
-//        List<BizInterBean> interList = new ArrayList<>();
-//        for (int i = 0; i <= days; i++) {
-//            Date date = DateUtil.addDay(DateUtil.StringToDate(startDate,"yyyy-MM-dd"), i);
-//            String startDate1 = DateUtil.formatDateStrToString(DateUtil.formatDateToStr(date, "yyyy-MM-dd HH:mm:ss"));
-//            String param = startDate1.replaceAll("-","");
-//            List<BizInterBean> bizInterBeans = myInterMapper.selectInter( param + "_time_count");
-//            BizInterBean bizInterBean = bizInterBeans.get(0);
-//            bizInterBean.setDate(startDate1);
-//            interList.add(bizInterBean);
-//        }
-//        return new ResponseBean<>(interList);
-//    }
-
 
     /**
      * 查询指定日期的原始数据
@@ -208,38 +196,12 @@ public class IndexService {
     public List<BizAppBean> App(String date) {
         String param = date.replaceAll("-", "");
         List<BizAppBean> bizAppBeans = myAppMapper.selectApp(param + "_flux");
-        List<BizAppBean> result = new ArrayList<>();
-        BizAppBean other = new BizAppBean();
-        other.setAppName("其他");
-        double p = 0;
-        double b = 0;
-        double c = 0;
-        double d = 0;
         for (BizAppBean bizAppBean : bizAppBeans) {
-            //String AppName = new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-            String AppName = CodeUtils.convertCharset(bizAppBean.getAppName());
-            if (AppName.equals("访问网站")
-                    || AppName.equals("Web流媒体")
-                    || AppName.equals("P2P")
-                    || AppName.equals("P2P流媒体")
-                    || AppName.equals("移动终端应用")) {
-                bizAppBean.setAppName(AppName);
-                result.add(bizAppBean);
-                p += Double.parseDouble(bizAppBean.getFluxPercentage());
-                d += bizAppBean.getFlux();
-                b = bizAppBean.getFlux();
-                c = Double.parseDouble(bizAppBean.getFluxPercentage());
-            }
             bizAppBean.setDate(date);
         }
-        double a = 100 - p;
-        double e = b/c*100 - d;
-        other.setFluxPercentage(String.valueOf(a));
-        other.setDate(date);
-        other.setFlux(e);
-        result.add(other);
-        return result;
+        return bizAppBeans;
     }
+
 
     //应用流量，每日同步数据
     public boolean insertAppFluxSort(String date) {
@@ -271,22 +233,37 @@ public class IndexService {
     }
 
     //应用流量,查询结果集,返回给前端数据
-    public ResponseBean<List<BizAppBean>> App(String startDate, String endData) {
-        AppFluxSortExample example = new AppFluxSortExample();
-        example.createCriteria().andFluxDateBetween(startDate, endData);
-        List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
-        List<BizAppBean> resultApp = new ArrayList<>();
+    public ResponseBean<List<BizAppBean>> App(String startdate,String enddate) {
+        List<BizAppBean> bizAppBeans = myAppMapper.selectappSort(startdate,enddate);
+        List<BizAppBean> result = new ArrayList<>();
         BizAppBean other = new BizAppBean();
-        for (AppFluxSort appFluxSort : appFluxSorts) {
-            BizAppBean appBean = new BizAppBean();
-            //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
-            appBean.setDate(appFluxSort.getFluxDate());
-            appBean.setAppName(CodeUtils.convertCharset(appFluxSort.getAppName()));
-            appBean.setFlux(appFluxSort.getFlux());
-            appBean.setFluxPercentage(appFluxSort.getFluxPercentage());
-            resultApp.add(appBean);
+        other.setAppName("其他");
+        double p = 0,b = 0,c = 0,d = 0;
+        DecimalFormat df = new DecimalFormat("#.00");
+        for(BizAppBean bizAppBean : bizAppBeans){
+            String appName = CodeUtils.convertCharset(bizAppBean.getAppName());
+            if (appName.equals("访问网站")
+                    || appName.equals("Web流媒体")
+                    || appName.equals("P2P")
+                    || appName.equals("P2P流媒体")
+                    || appName.equals("移动终端应用")) {
+                bizAppBean.setAppName(appName);
+                String fp = bizAppBean.getFluxPercentage();
+                bizAppBean.setFluxPercentage(df.format(Double.parseDouble(fp)));
+                result.add(bizAppBean);
+                p += Double.parseDouble(bizAppBean.getFluxPercentage());
+                d += bizAppBean.getFlux();
+                b = bizAppBean.getFlux();
+                c = Double.parseDouble(bizAppBean.getFluxPercentage());
+            }
         }
-        return new ResponseBean<>(resultApp);
+        double a = 100 - p;
+        String str = df.format(a);
+        double e = b/c*100 - d;
+        String st = df.format(e);
+        other.setFluxPercentage(str);
+        other.setFlux(Double.parseDouble(st));
+        result.add(other);
+        return new ResponseBean<>(result);
     }
-
 }
