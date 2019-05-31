@@ -254,6 +254,7 @@ public class ReligionService {
         if (userVisitUrl.contains(featureUrl.getUrl())) {//对应的宗教行为,插入到结果集
             ReligionTimes rt = new ReligionTimes();
             rt.setReligionName(featureUrl.getReligionName());
+            if(userVisitUrl.length()>1000) userVisitUrl = userVisitUrl.substring(0,1000);
             rt.setUrl(userVisitUrl);
             rt.setWebName(resultMap.get("title"));
             rt.setWebTitle(resultMap.get("title"));

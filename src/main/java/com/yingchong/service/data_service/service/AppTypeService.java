@@ -79,6 +79,7 @@ public class AppTypeService {
         List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResult(startDate, endDate);
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
             bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            //bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
         }
         return new ResponseBean<>(bizAppTypeBeans);
     }
