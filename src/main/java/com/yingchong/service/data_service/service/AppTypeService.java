@@ -80,6 +80,7 @@ public class AppTypeService {
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
             bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
             //bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            bizAppTypeBean.setDateStr(DateUtil.formatDateToStr(bizAppTypeBean.getDate(),"yyyy-MM-dd"));
         }
         return new ResponseBean<>(bizAppTypeBeans);
     }
