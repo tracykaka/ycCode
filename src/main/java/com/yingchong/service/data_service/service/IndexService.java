@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -208,13 +210,6 @@ public class IndexService {
     public List<BizAppBean> App(String date) {
         String param = date.replaceAll("-", "");
         List<BizAppBean> bizAppBeans = myAppMapper.selectApp(param + "_flux");
-        List<BizAppBean> result = new ArrayList<>();
-        BizAppBean other = new BizAppBean();
-        other.setAppName("其他");
-        double p = 0;
-        double b = 0;
-        double c = 0;
-        double d = 0;
         for (BizAppBean bizAppBean : bizAppBeans) {
             //String AppName = new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
             String AppName = CodeUtils.convertCharset(bizAppBean.getAppName());
@@ -232,13 +227,7 @@ public class IndexService {
             }
             bizAppBean.setDate(date);
         }
-        double a = 100 - p;
-        double e = b/c*100 - d;
-        other.setFluxPercentage(String.valueOf(a));
-        other.setDate(date);
-        other.setFlux(e);
-        result.add(other);
-        return result;
+        return bizAppBeans;
     }
 
     //应用流量，每日同步数据
@@ -271,12 +260,36 @@ public class IndexService {
     }
 
     //应用流量,查询结果集,返回给前端数据
-    public ResponseBean<List<BizAppBean>> App(String startDate, String endData) {
-        AppFluxSortExample example = new AppFluxSortExample();
-        example.createCriteria().andFluxDateBetween(startDate, endData);
-        List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
-        List<BizAppBean> resultApp = new ArrayList<>();
+    public ResponseBean<List<BizAppBean>> App(String startdate,String enddate) {
+        List<BizAppBean> bizAppBeans = myAppMapper.selectappSort(startdate,enddate);
+        List<BizAppBean> result = new ArrayList<>();
         BizAppBean other = new BizAppBean();
+        other.setAppName("其他");
+        double p = 0,b = 0,c = 0,d = 0;
+        for(BizAppBean bizAppBean:bizAppBeans){
+            String appName = (new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            if (appName.equals("访问网站")
+                    || appName.equals("Web流媒体")
+                    || appName.equals("P2P")
+                    || appName.equals("P2P流媒体")
+                    || appName.equals("移动终端应用")) {
+                bizAppBean.setAppName(appName);
+                result.add(bizAppBean);
+                p += Double.parseDouble(bizAppBean.getFluxPercentage());
+                d += bizAppBean.getFlux();
+                b = bizAppBean.getFlux();
+                c = Double.parseDouble(bizAppBean.getFluxPercentage());
+            }
+        }
+        double a = 100 - p;
+        DecimalFormat df = new DecimalFormat("#.00");
+        String str = df.format(a);
+        double e = b/c*100 - d;
+        other.setFluxPercentage(str);
+        other.setFlux(e);
+        result.add(other);
+        return new ResponseBean<>(result);
+    }
         for (AppFluxSort appFluxSort : appFluxSorts) {
             BizAppBean appBean = new BizAppBean();
             //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
@@ -290,3 +303,67 @@ public class IndexService {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public ResponseBean<List<BizAppBean>> App(String startDate, String endData) {
+//        AppFluxSortExample example = new AppFluxSortExample();
+//        example.createCriteria().andFluxDateBetween(startDate, endData);
+//        List<AppFluxSort> appFluxSorts = appFluxSortMapper.selectByExample(example);
+//        List<BizAppBean> resultApp = new ArrayList<>();
+//        for (AppFluxSort appFluxSort : appFluxSorts) {
+//            BizAppBean appBean = new BizAppBean();
+//            appBean.setDate(appFluxSort.getFluxDate());
+//            appBean.setAppName(new String(appFluxSort.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+//            appBean.setFlux(appFluxSort.getFlux());
+//            appBean.setFluxPercentage(appFluxSort.getFluxPercentage());
+//            resultApp.add(appBean);
+//        }
+//        return new ResponseBean<>(resultApp);
+//    }
+
+}
+//    public List<BizAppBean> App(String date) {
+//        String param = date.replaceAll("-", "");
+//        List<BizAppBean> bizAppBeans = myAppMapper.selectApp(param + "_flux");
+//        List<BizAppBean> result = new ArrayList<>();
+//        BizAppBean other = new BizAppBean();
+//        other.setAppName("其他");
+//        double p = 0,b = 0,c = 0,d = 0;
+//        for (BizAppBean bizAppBean : bizAppBeans) {
+//            String AppName = new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+//            if (AppName.equals("访问网站")
+//                    || AppName.equals("Web流媒体")
+//                    || AppName.equals("P2P")
+//                    || AppName.equals("P2P流媒体")
+//                    || AppName.equals("移动终端应用")) {
+//                bizAppBean.setAppName(bizAppBean.getAppName());
+//                result.add(bizAppBean);
+//                p += Double.parseDouble(bizAppBean.getFluxPercentage());
+//                d += bizAppBean.getFlux();
+//                b = bizAppBean.getFlux();
+//                c = Double.parseDouble(bizAppBean.getFluxPercentage());
+//            }
+//            bizAppBean.setDate(date);
+//        }
+//        double a = 100 - p;
+//        DecimalFormat df = new DecimalFormat("#.00");
+//        String str = df.format(a);
+//        double e = b/c*100 - d;
+//        other.setFluxPercentage(str);
+//        other.setDate(date);
+//        other.setFlux(e);
+//        result.add(other);
+//        return result;
+//    }
