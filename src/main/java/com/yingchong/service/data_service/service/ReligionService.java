@@ -263,7 +263,11 @@ public class ReligionService {
             rt.setHostPort(bizActionBean.getSrcPort());
             rt.setTerminalDetail(resultMap.get("termtype"));
             rt.setDns(resultMap.get("DNS"));
-            rt.setDomainName(resultMap.get("urldata"));
+            if(resultMap.get("urldata").length()>1000){
+                rt.setDomainName(resultMap.get("urldata").substring(0,1000));
+            }else {
+                rt.setDomainName(resultMap.get("urldata"));
+            }
             rt.setMacAddress(resultMap.get("mac"));
             rt.setProtocol(resultMap.get("nProtocol"));
             rt.setVisiteTime(bizActionBean.getRecordTime());
