@@ -23,4 +23,13 @@ public interface MyAppTypeMapper {
             @Param("startTime") String startTime,
             @Param("endTime") String endTime
     );
+    @Select("select sum(action_count) num,action_name app,action_date date \n" +
+            "from action_type \n" +
+            "where action_date >= #{startTime} and action_date <= #{endTime} and action_name = #{appName} \n" +
+            "GROUP BY action_date ORDER BY num desc")
+    List<BizAppTypeBean> selectAppTypeTreadResultByAppName(
+            @Param("startTime") String startTime,
+            @Param("endTime") String endTime,
+            @Param("appName") String appName
+    );
 }

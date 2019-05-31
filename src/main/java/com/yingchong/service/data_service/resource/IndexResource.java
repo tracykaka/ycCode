@@ -2,6 +2,7 @@ package com.yingchong.service.data_service.resource;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppTreadBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppTypeBean;
 import com.yingchong.service.data_service.BizBean.biz_flux.BizDataBean;
 import com.yingchong.service.data_service.BizBean.biz_interTime.BizInterBean;
@@ -157,7 +158,7 @@ public class IndexResource {
     })
     @ApiOperation(value="查询网络行为趋势", notes="查询网络行为趋势")
     @RequestMapping(value={"/actionTypeTrend"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizAppTypeBean>> actionTypeTrend(
+    public ResponseBean<BizAppTreadBean> actionTypeTrend(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){

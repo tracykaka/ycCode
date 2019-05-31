@@ -1,6 +1,7 @@
 package com.yingchong.service.data_service.service;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppTreadBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppTypeBean;
 import com.yingchong.service.data_service.mapper.MyAppTypeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ActionTypeMapper;
@@ -75,15 +76,50 @@ public class AppTypeService {
      * @param endDate   结束时间
      * @return
      */
-    public ResponseBean<List<BizAppTypeBean>> actionTypeTrend(String startDate,String endDate) {
-        List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResult(startDate, endDate);
+    public ResponseBean<BizAppTreadBean> actionTypeTrend(String startDate, String endDate) {
+        BizAppTreadBean bizAppTreadBean = new BizAppTreadBean();
+        List<BizAppTypeBean> top3 = myAppTypeMapper.selectAppTypeResult(startDate, endDate);
+        List<BizAppTypeBean> bizAppTypeBeans1 = null;
+        List<BizAppTypeBean> bizAppTypeBeans2 = null;
+        List<BizAppTypeBean> bizAppTypeBeans3 = null;
+        for (int i=0;i<3;i++) {
+            BizAppTypeBean bizAppTypeBean = top3.get(i);
+            List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResultByAppName(startDate, endDate, CodeUtils.convertCharset88591(bizAppTypeBean.getApp()));
+            if(i==0){
+                bizAppTypeBeans1 = bizAppTypeBeans;
+                for (BizAppTypeBean appTypeBean : bizAppTypeBeans1) {
+                    appTypeBean.setApp(CodeUtils.convertCharset(appTypeBean.getApp()));
+                    appTypeBean.setDateStr(DateUtil.formatDateToStr(appTypeBean.getDate(),AppTypeService.dateParttern));
+                }
+                bizAppTreadBean.setList1(bizAppTypeBeans1);
+            }
+            if(i==1){
+                bizAppTypeBeans2 = bizAppTypeBeans;
+                for (BizAppTypeBean appTypeBean : bizAppTypeBeans2) {
+                    appTypeBean.setApp(CodeUtils.convertCharset(appTypeBean.getApp()));
+                    appTypeBean.setDateStr(DateUtil.formatDateToStr(appTypeBean.getDate(),AppTypeService.dateParttern));
+                }
+                bizAppTreadBean.setList2(bizAppTypeBeans2);
+            }
+
+            if(i==2) {
+                bizAppTypeBeans3 = bizAppTypeBeans;
+                for (BizAppTypeBean appTypeBean : bizAppTypeBeans3) {
+                    appTypeBean.setApp(CodeUtils.convertCharset(appTypeBean.getApp()));
+                    appTypeBean.setDateStr(DateUtil.formatDateToStr(appTypeBean.getDate(),AppTypeService.dateParttern));
+                }
+                bizAppTreadBean.setList3(bizAppTypeBeans3);
+            }
+        }
+
+        /*List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResult(startDate, endDate);
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
             //bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
             bizAppTypeBean.setApp(CodeUtils.convertCharset(bizAppTypeBean.getApp()));
 
             bizAppTypeBean.setDateStr(DateUtil.formatDateToStr(bizAppTypeBean.getDate(),"yyyy-MM-dd"));
-        }
-        return new ResponseBean<>(bizAppTypeBeans);
+        }*/
+        return new ResponseBean<>(bizAppTreadBean);
     }
 
 }
