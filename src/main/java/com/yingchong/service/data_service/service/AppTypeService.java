@@ -6,13 +6,13 @@ import com.yingchong.service.data_service.mapper.MyAppTypeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ActionTypeMapper;
 import com.yingchong.service.data_service.mybatis.model.ActionType;
 import com.yingchong.service.data_service.mybatis.model.ActionTypeExample;
+import com.yingchong.service.data_service.utils.CodeUtils;
 import com.yingchong.service.data_service.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class AppTypeService {
         List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeResult(startDate, endDate);
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
             //logger.info("utf8: {}",new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-            bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            bizAppTypeBean.setApp(CodeUtils.convertCharset(bizAppTypeBean.getApp()));
         }
         return new ResponseBean<>(bizAppTypeBeans);
     }
@@ -78,8 +78,9 @@ public class AppTypeService {
     public ResponseBean<List<BizAppTypeBean>> actionTypeTrend(String startDate,String endDate) {
         List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResult(startDate, endDate);
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
-            bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
             //bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            bizAppTypeBean.setApp(CodeUtils.convertCharset(bizAppTypeBean.getApp()));
+
             bizAppTypeBean.setDateStr(DateUtil.formatDateToStr(bizAppTypeBean.getDate(),"yyyy-MM-dd"));
         }
         return new ResponseBean<>(bizAppTypeBeans);

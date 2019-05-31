@@ -15,6 +15,7 @@ import com.yingchong.service.data_service.mybatis.model.FeatureUrlExample;
 import com.yingchong.service.data_service.mybatis.model.ReligionTimes;
 import com.yingchong.service.data_service.mybatis.model.ReligionTimesExample;
 import com.yingchong.service.data_service.service.thread.CompareThread;
+import com.yingchong.service.data_service.utils.CodeUtils;
 import com.yingchong.service.data_service.utils.DateUtil;
 import com.yingchong.service.data_service.utils.JdomUtils;
 import org.slf4j.Logger;
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -103,10 +103,13 @@ public class ReligionService {
             Integer page,Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionUrlRank(startDate, endDate);
+        for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
+            bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
+            bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
+        }
         PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
         return new ResponseBean<>(data);
     }
-
 
     /**
      * 查询宗教信息详情 分页
@@ -134,7 +137,7 @@ public class ReligionService {
     public ResponseBean<List<BizReligionPercent>> religionTread(String startDate, String endDate) {
         List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionTread(startDate, endDate);
         for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
-            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            String religionName = (CodeUtils.convertCharset(bizReligionPercent.getReligionName()));
             bizReligionPercent.setReligionName(religionName);
         }
         return new ResponseBean<>(bizReligionPercents);
@@ -156,7 +159,7 @@ public class ReligionService {
         other.setReligionName("其他");
         double p = 0;
         for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
-            String religionName = (new String(bizReligionPercent.getReligionName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            String religionName = (CodeUtils.convertCharset(bizReligionPercent.getReligionName()));
             if (religionName.equals("佛教")
                     || religionName.equals("基督教")
                     || religionName.equals("天主教")

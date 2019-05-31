@@ -12,12 +12,13 @@ import com.yingchong.service.data_service.mybatis.mapper.AppFluxSortMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FluxResultMapper;
 import com.yingchong.service.data_service.mybatis.mapper.OnlineTimeMapper;
 import com.yingchong.service.data_service.mybatis.model.*;
+import com.yingchong.service.data_service.utils.CodeUtils;
 import com.yingchong.service.data_service.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -215,7 +216,8 @@ public class IndexService {
         double c = 0;
         double d = 0;
         for (BizAppBean bizAppBean : bizAppBeans) {
-            String AppName = new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //String AppName = new String(bizAppBean.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            String AppName = CodeUtils.convertCharset(bizAppBean.getAppName());
             if (AppName.equals("访问网站")
                     || AppName.equals("Web流媒体")
                     || AppName.equals("P2P")
@@ -279,7 +281,7 @@ public class IndexService {
             BizAppBean appBean = new BizAppBean();
             //appBean.setDate(DateUtil.formatDateToStr(appFluxSort.getFluxData(),"yyyy-MM-dd"));
             appBean.setDate(appFluxSort.getFluxDate());
-            appBean.setAppName(new String(appFluxSort.getAppName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            appBean.setAppName(CodeUtils.convertCharset(appFluxSort.getAppName()));
             appBean.setFlux(appFluxSort.getFlux());
             appBean.setFluxPercentage(appFluxSort.getFluxPercentage());
             resultApp.add(appBean);
