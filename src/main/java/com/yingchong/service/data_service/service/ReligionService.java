@@ -202,8 +202,8 @@ public class ReligionService {
         int times = totalCount / step + 1;
         for (int i = 0; i < times; i++) {
             int s1 = (i * step);
-            batchSQL(tableName, featureUrls, s1);
-            //executeJob(pool, tableName, featureUrls, s1);
+            batchSQL(tableName, featureUrls, s1,date);
+            //executeJob(pool, tableName, featureUrls, s1,date);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}", i, s1);
         }
@@ -215,17 +215,17 @@ public class ReligionService {
         return true;
     }
 
-    private void executeJob(ExecutorService pool, String tableName, List<FeatureUrl> featureUrls, int s1) {
+    private void executeJob(ExecutorService pool, String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                batchSQL(tableName, featureUrls, s1);
+                batchSQL(tableName, featureUrls, s1,date);
             }
         };
         pool.execute(runnable);
     }
 
-    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1) {
+    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
@@ -237,7 +237,7 @@ public class ReligionService {
                     if (web_url.equals(s)) {//是请求 web 网站
                         String userVisitUrl = resultMap.get(url);
                         for (FeatureUrl featureUrl : featureUrls) {
-                            compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl);
+                            compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl,date);
                         }
                     }
                     s = null;
@@ -248,7 +248,7 @@ public class ReligionService {
         bizActionBeans = null;
     }
 
-    private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl) {
+    private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl,String date) {
         //logger.info("userVisitUrl={}, featureUrl={}",userVisitUrl,featureUrl.getUrl());
         //if(userVisitUrl.contains("baidu.com"))
         if (userVisitUrl.contains(featureUrl.getUrl())) {//对应的宗教行为,插入到结果集
@@ -267,10 +267,10 @@ public class ReligionService {
             rt.setProtocol(resultMap.get("nProtocol"));
             rt.setVisiteTime(bizActionBean.getRecordTime());
             rt.setTerminalType(resultMap.get("termtype"));
-            Date date = new Date();
-            rt.setCreateTime(date);
-            rt.setUpdateTime(date);
-            rt.setTimesDate(date);
+
+            rt.setCreateTime(new Date());
+            rt.setUpdateTime(new Date());
+            rt.setTimesDate(DateUtil.StringToDate(date,AppTypeService.dateParttern));
             int insert = religionTimesMapper.insert(rt);
             logger.info("匹配到宗教行为:{}, insert={}", userVisitUrl, insert);
         }
