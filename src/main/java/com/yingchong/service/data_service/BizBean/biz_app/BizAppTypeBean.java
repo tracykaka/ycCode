@@ -6,6 +6,7 @@ public class BizAppTypeBean {
     private String app;
     private Integer num;
     private Date date;
+    private String dateStr;
 
     public String getApp() {
         return app;
@@ -29,5 +30,13 @@ public class BizAppTypeBean {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
     }
 }
