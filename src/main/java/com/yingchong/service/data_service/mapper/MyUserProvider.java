@@ -7,16 +7,17 @@ public class MyUserProvider {
     public String queryUser(Map<String, Object> param) {
         String whereCondition = this.getWhereCondition(param);
 
-        return "SELECT u.id id,u.user_name name,u.age age, s.score score " +
-                "from user u left join score s on u.id = s.user_id " +
+        return "SELECT u.id id,u.user_name userName,u.password password, u.nick_name nickName,u.description description, " +
+                " u.login_time loginTime, create_time createTime " +
+                "from user u  " +
                 "where " + whereCondition;
     }
 
     private String getWhereCondition(Map<String,Object> param) {
         StringBuilder condition = new StringBuilder(" 1=1 ");
 
-        if (param.get("keyWord") != null && !String.valueOf(param.get("keyWord")).equals("")) {
-            condition.append(" and (signal_id like concat('%',#{keyWord},'%') or user_name like concat('%',#{keyWord},'%') or email like concat('%',#{keyWord},'%'))");
+        if (param.get("userName") != null && !String.valueOf(param.get("userName")).equals("")) {
+            condition.append(" and u.user_name like concat('%',#{userName},'%') ");
         }
         if (param.get("startDate") != null ) {
             condition.append(" and u.create_time >= #{startDate} ");
@@ -24,17 +25,9 @@ public class MyUserProvider {
         if (param.get("endDate") != null ) {
             condition.append(" and u.create_time <= #{endDate} ");
         }
-
-        if (param.get("status") != null) {
-            condition.append(" and status = #{status} ");
+        if (param.get("description") != null && !String.valueOf(param.get("description")).equals("")) {
+            condition.append(" and u.description like concat('%',#{description},'%') ");
         }
-        if (param.get("mobile") != null) {
-            condition.append(" and mobile = #{mobile} ");
-        }
-        if (param.get("email") != null) {
-            condition.append(" and email like concat('%',#{email},'%') ");
-        }
-
         return condition.append(" order by u.create_time ").toString();
     }
 }

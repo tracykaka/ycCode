@@ -1,8 +1,11 @@
 package com.yingchong.service.data_service.service;
 
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.yingchong.service.data_service.BizBean.BizUser;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.mapper.MyUserMapper;
 import com.yingchong.service.data_service.mybatis.mapper.UserMapper;
 import com.yingchong.service.data_service.mybatis.model.User;
 import com.yingchong.service.data_service.mybatis.model.UserExample;
@@ -14,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -24,6 +29,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private MyUserMapper myUserMapper;
 
 
     public ResponseBean<BizUser> login(String userName, String password, HttpSession session) {
@@ -111,5 +119,23 @@ public class UserService {
         return new ResponseBean<>(userMapper.selectByPrimaryKey(userId));
     }
 
+    public ResponseBean<PageInfo<User>> userList(
+            String userName,String startDate,String endDate,
+            String description,
+            Integer page,Integer pageSize
+    ) {
+        Map<String,Object> selectParam = new HashMap<>();
+        selectParam.put("userName",userName);
+        selectParam.put("startDate",startDate);
+        selectParam.put("endDate",endDate);
+        selectParam.put("description",description);
+        PageHelper.startPage(page, pageSize);
+        List<User> userInfos = myUserMapper.queryUser(selectParam);
+        PageInfo<User> date = new PageInfo<>(userInfos);
+        ResponseBean<PageInfo<User>> responseBean = new ResponseBean<>();
+        //responseBean.setCodeAndMsg(ErrorCode.OK.value(), ErrorCode.OK.msg());
+        responseBean.setData(date);
+        return responseBean;
+    }
 
 }

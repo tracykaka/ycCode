@@ -2,6 +2,8 @@ package com.yingchong.service.data_service.BizBean;
 
 import com.yingchong.service.data_service.mybatis.model.User;
 
+import java.util.Date;
+
 public class BizUser {
     private Integer id;
 
@@ -14,6 +16,24 @@ public class BizUser {
     private String description;
 
     private String token;
+
+    private Date createTime, loginTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLoginTime() {
+        return loginTime;
+    }
+
+    public void setLoginTime(Date loginTime) {
+        this.loginTime = loginTime;
+    }
 
     public BizUser() {
 

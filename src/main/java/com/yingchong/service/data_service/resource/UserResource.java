@@ -1,5 +1,6 @@
 package com.yingchong.service.data_service.resource;
 
+import com.github.pagehelper.PageInfo;
 import com.yingchong.service.data_service.BizBean.BizUser;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.mybatis.model.User;
@@ -88,10 +89,27 @@ public class UserResource {
     public ResponseBean<User> getAdminUser(
             @RequestParam(value = "userId") Integer  userId
     ) {
-//        String token = request.getHeader("token");
-//        Object attribute = request.getSession().getAttribute(token);
-//        Integer userId = Integer.parseInt(attribute.toString())
         return userService.getAdminUser(userId);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "用户名", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "startDate", value = "开始时间", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "endDate", value = "结束时间", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "description", value = "描述", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页码",required = true,dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页数量",required = true, dataType = "int", paramType = "query")
+    })
+    @GetMapping(value={"/userList"})
+    public ResponseBean<PageInfo<User>> userList(
+            @RequestParam(value = "userName",required = false)String userName,
+            @RequestParam(value = "startDate",required = false)String startDate,
+            @RequestParam(value = "endDate",required = false)String endDate,
+            @RequestParam(value = "description",required = false)String description,
+            @RequestParam(value = "page")Integer page,
+            @RequestParam(value = "pageSize")Integer pageSize
+    ) {
+        return userService.userList(userName,startDate,endDate,description,page,pageSize);
     }
 
     @GetMapping(value={"/notLogin"})
