@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionTrend;
 import com.yingchong.service.data_service.service.ReligionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -60,11 +61,11 @@ public class ReligionResource {
     })
     @ApiOperation(value="宗教信仰访问趋势图", notes="宗教信仰访问趋势图")
     @RequestMapping(value={"/religionTread"}, method= RequestMethod.GET)
-    public ResponseBean<List<BizReligionPercent>> religionTread(
+    public ResponseBean<BizReligionTrend> religionTread(
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){
-        return religionService.religionTread(startDate,endDate);
+        return religionService.religionTrend(startDate,endDate);
     }
 
     @ApiImplicitParams({

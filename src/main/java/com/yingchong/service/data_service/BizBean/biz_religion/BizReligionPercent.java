@@ -12,6 +12,16 @@ public class BizReligionPercent {
 
     private Date timesDate;
 
+    private String dateStr;
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
     public Date getTimesDate() {
         return timesDate;
     }

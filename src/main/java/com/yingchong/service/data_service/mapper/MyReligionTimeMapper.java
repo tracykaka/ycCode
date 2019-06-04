@@ -20,10 +20,12 @@ public interface MyReligionTimeMapper {
             @Param("endTime") String endTime
     );
 
-    @Select("SELECT religion_name religionName,count(religion_name) visit_times,count(religion_name)/(SELECT count(*)from religion_times) percent ,times_date timesDate " +
-            "from religion_times where times_date >= #{startTime} and times_date <= #{endTime}  " +
-            "GROUP BY religion_name , times_date")
-    List<BizReligionPercent> selectReligionTread(
+    @Select("SELECT religion_name religionName,count(religion_name) visitTime,times_date timesDate " +
+            "from religion_times " +
+            "where times_date >= #{startTime} and times_date <= #{endTime} and religion_name=#{religionName}  " +
+            "GROUP BY times_date order by times_date")
+    List<BizReligionPercent> selectReligionTrend(
+            @Param("religionName") String religionName,
             @Param("startTime") String startTime,
             @Param("endTime") String endTime
     );
