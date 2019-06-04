@@ -19,11 +19,11 @@ public class TimeTask {
     private CalculateDataService calculateDataService;
 
     /**
-     * 更新今天的步数到之前的步数
+     *
      * 每天凌晨 0 点执行一次
      */
     @Scheduled(cron = "0 0 0 1/1 * ?")
-    public void addTodayDropsToBefore(){
+    public void calculateResult(){
         Date nowDate = new Date();
         String date = DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd");
         calculateDataService.TimeTask(date);

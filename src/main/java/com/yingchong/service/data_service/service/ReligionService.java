@@ -6,6 +6,7 @@ import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.BizBean.biz_action.BizActionBean;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionDetailInfo;
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercent;
+import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionTrend;
 import com.yingchong.service.data_service.mapper.MyActionMapper;
 import com.yingchong.service.data_service.mapper.MyReligionTimeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FeatureUrlMapper;
@@ -23,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,21 +132,100 @@ public class ReligionService {
     }
 
     /**
-     * 宗教信仰访问趋势图
+     * 宗教信仰访问趋势图: 佛教,道教,基督教,天主教,伊斯兰教
      *
      * @param startDate 开始时间
      * @param endDate   结束时间
      * @return ResponseBean
      */
-    public ResponseBean<List<BizReligionPercent>> religionTread(String startDate, String endDate) {
-        List<BizReligionPercent> bizReligionPercents = myReligionTimeMapper.selectReligionTread(startDate, endDate);
-        for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
-            String religionName = (CodeUtils.convertCharset(bizReligionPercent.getReligionName()));
-            bizReligionPercent.setReligionName(religionName);
+    public ResponseBean<BizReligionTrend> religionTrend(String startDate, String endDate) {
+        BizReligionTrend bizReligionTrend = new BizReligionTrend();
+
+        String[] religionNames = new String []{"佛教","道教","基督教","伊斯兰教","天主教"};
+        List<BizReligionPercent> bizReligionPercents;
+        for (String religionName : religionNames) {
+            String religionName1 = new String(religionName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+            bizReligionPercents = myReligionTimeMapper.selectReligionTrend(religionName1,startDate, endDate);
+            if (religionName.equals("佛教")) {
+                for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+                    bizReligionPercent.setReligionName("佛教");
+                    bizReligionPercent.setDateStr(DateUtil.formatDateToStr(bizReligionPercent.getTimesDate(),AppTypeService.dateParttern));
+                }
+                bizReligionTrend.setFojiaoList(bizReligionPercents);
+            }
+            if (religionName.equals("道教")) {
+                for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+                    bizReligionPercent.setReligionName("道教");
+                    bizReligionPercent.setDateStr(DateUtil.formatDateToStr(bizReligionPercent.getTimesDate(),AppTypeService.dateParttern));
+
+                }
+                bizReligionTrend.setDaojiaoList(bizReligionPercents);
+            }
+            if (religionName.equals("基督教")) {
+                for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+                    bizReligionPercent.setReligionName("基督教");
+                    bizReligionPercent.setDateStr(DateUtil.formatDateToStr(bizReligionPercent.getTimesDate(),AppTypeService.dateParttern));
+                }
+                bizReligionTrend.setJiduList(bizReligionPercents);
+            }
+            if (religionName.equals("伊斯兰教")) {
+                for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+                    bizReligionPercent.setReligionName("伊斯兰教");
+                    bizReligionPercent.setDateStr(DateUtil.formatDateToStr(bizReligionPercent.getTimesDate(),AppTypeService.dateParttern));
+                }
+                bizReligionTrend.setYisilanList(bizReligionPercents);
+            }
+            if (religionName.equals("天主教")) {
+                for (BizReligionPercent bizReligionPercent : bizReligionPercents) {
+                    bizReligionPercent.setReligionName("天主教");
+                    bizReligionPercent.setDateStr(DateUtil.formatDateToStr(bizReligionPercent.getTimesDate(),AppTypeService.dateParttern));
+                }
+                bizReligionTrend.setTianzhujiaoList(bizReligionPercents);
+            }
         }
-        return new ResponseBean<>(bizReligionPercents);
+        checkData(bizReligionTrend,startDate,endDate);
+        return new ResponseBean<>(bizReligionTrend);
     }
 
+    private void checkData(BizReligionTrend bizReligionTrend,String startDate,String endDate) {
+        List<BizReligionPercent> daojiaoList = bizReligionTrend.getDaojiaoList();
+        List<BizReligionPercent> fojiaoList = bizReligionTrend.getFojiaoList();
+        List<BizReligionPercent> jiduList = bizReligionTrend.getJiduList();
+        List<BizReligionPercent> tianzhujiaoList = bizReligionTrend.getTianzhujiaoList();
+        List<BizReligionPercent> yisilanList = bizReligionTrend.getYisilanList();
+
+        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
+        int i = 0;
+        for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1))
+        {
+            checkListData(daojiaoList, start, i, date,"道教");
+            checkListData(fojiaoList, start, i, date,"佛教");
+            checkListData(jiduList, start, i, date,"基督教");
+            checkListData(tianzhujiaoList, start, i, date,"天主教");
+            checkListData(yisilanList, start, i, date,"伊斯兰教");
+            i++;
+        }
+    }
+
+    private void checkListData(List<BizReligionPercent> jiaoList, LocalDate start, int i, LocalDate date,String religionName) {
+        if(jiaoList.size()-1 > i){
+            BizReligionPercent bizReligionPercent = jiaoList.get(i);
+            if(bizReligionPercent==null || !date.toString().equals(bizReligionPercent.getDateStr())){
+                bizReligionPercent = new BizReligionPercent();
+                bizReligionPercent.setDateStr(start.plusDays(i).toString());
+                bizReligionPercent.setReligionName(religionName);
+                bizReligionPercent.setVisitTime(0);
+                jiaoList.add(i,bizReligionPercent);
+            }
+        }else {
+            BizReligionPercent bizReligionPercent = new BizReligionPercent();
+            bizReligionPercent.setDateStr(start.plusDays(i+1).toString());
+            bizReligionPercent.setReligionName(religionName);
+            bizReligionPercent.setVisitTime(0);
+            jiaoList.add(bizReligionPercent);
+        }
+    }
 
     /**
      * 宗教信仰访问分类
