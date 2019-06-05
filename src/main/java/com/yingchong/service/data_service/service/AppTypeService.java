@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -111,7 +113,7 @@ public class AppTypeService {
                 bizAppTreadBean.setList3(bizAppTypeBeans3);
             }
         }
-
+        checkTrendData(bizAppTreadBean, startDate, endDate);
         /*List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeTreadResult(startDate, endDate);
         for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
             //bizAppTypeBean.setApp(new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
@@ -120,6 +122,41 @@ public class AppTypeService {
             bizAppTypeBean.setDateStr(DateUtil.formatDateToStr(bizAppTypeBean.getDate(),"yyyy-MM-dd"));
         }*/
         return new ResponseBean<>(bizAppTreadBean);
+    }
+
+    private void checkTrendData(BizAppTreadBean bizAppTreadBean,String startDate, String endDate) {
+        List<BizAppTypeBean> list1 = bizAppTreadBean.getList1();
+        List<BizAppTypeBean> list2 = bizAppTreadBean.getList2();
+        List<BizAppTypeBean> list3 = bizAppTreadBean.getList3();
+        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
+        int i = 0;
+        for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1))
+        {
+            checkListData(list1, start, i, date);
+            checkListData(list2, start, i, date);
+            checkListData(list3, start, i, date);
+            i++;
+        }
+    }
+    private void checkListData(List<BizAppTypeBean> list,LocalDate start, int i, LocalDate date) {
+        String app = list.get(0).getApp();
+        if(list.size()-1 > i){
+            BizAppTypeBean appTypeBean = list.get(i);
+            if(appTypeBean==null || !date.toString().equals(appTypeBean.getDateStr())){
+                appTypeBean = new BizAppTypeBean();
+                appTypeBean.setDateStr(start.plusDays(i).toString());
+                appTypeBean.setApp(app);
+                appTypeBean.setNum(0);
+                list.add(i,appTypeBean);
+            }
+        }else {
+            BizAppTypeBean appTypeBean = new BizAppTypeBean();
+            appTypeBean.setDateStr(start.plusDays(i+1).toString());
+            appTypeBean.setApp(app);
+            appTypeBean.setNum(0);
+            list.add(appTypeBean);
+        }
     }
 
 }
