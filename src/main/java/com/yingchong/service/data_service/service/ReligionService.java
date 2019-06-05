@@ -288,8 +288,8 @@ public class ReligionService {
         int times = totalCount / step + 1;
         for (int i = 0; i < times; i++) {
             int s1 = (i * step);
-            batchSQL(tableName, featureUrls, s1,date);
-            //executeJob(pool, tableName, featureUrls, s1,date);
+            //batchSQL(tableName, featureUrls, s1,date);
+            executeJob(pool, tableName, featureUrls, s1,date);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}", i, s1);
         }
