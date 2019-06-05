@@ -19,9 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,6 +126,7 @@ public class IndexService {
     public ResponseBean<List<BizDataBean>> Flux(String startDate, String endData) {
         FluxResultExample example = new FluxResultExample();
         example.createCriteria().andFluxDateBetween(DateUtil.StringToDate(startDate, "yyyy-MM-dd"), DateUtil.StringToDate(endData, "yyyy-MM-dd"));
+        example.setOrderByClause("flux_date");
         List<FluxResult> fluxResults = fluxResultMapper.selectByExample(example);
         List<BizDataBean> resultData = new ArrayList<>();
         for (FluxResult fluxResult : fluxResults) {
@@ -181,6 +180,7 @@ public class IndexService {
     public ResponseBean<List<BizInterBean>> Inter(String startDate, String endData) {
         OnlineTimeExample example = new OnlineTimeExample();
         example.createCriteria().andResultDateBetween(DateUtil.StringToDate(startDate, "yyyy-MM-dd"), DateUtil.StringToDate(endData, "yyyy-MM-dd"));
+        example.setOrderByClause("result_date");
         List<OnlineTime> onlineTimes = onlineTimeMapper.selectByExample(example);
         List<BizInterBean> resultInter = new ArrayList<>();
         for (OnlineTime onlineTime : onlineTimes) {
