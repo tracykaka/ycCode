@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -77,8 +78,8 @@ public class UserService {
             User user = new User();
             user.setUserName(userName);
             user.setPassword(MD5.encode(password));
-            user.setDescription(description);
-            user.setNickName(nickName);
+            user.setDescription(new String(description.getBytes(StandardCharsets.UTF_8),StandardCharsets.ISO_8859_1));
+            user.setNickName(new String(nickName.getBytes(StandardCharsets.UTF_8),StandardCharsets.ISO_8859_1));
             //user.setLoginTime();
             user.setCreateTime(new Date());
             user.setUpdateTime(new Date());
@@ -116,9 +117,22 @@ public class UserService {
      * @return
      */
     public ResponseBean<User> getAdminUser(Integer userId) {
-        return new ResponseBean<>(userMapper.selectByPrimaryKey(userId));
+        User user = userMapper.selectByPrimaryKey(userId);
+        user.setDescription(new String(user.getDescription().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        user.setNickName(new String(user.getNickName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        return new ResponseBean<>(user);
     }
 
+    /**
+     * 分页查询列表
+     * @param userName
+     * @param startDate
+     * @param endDate
+     * @param description
+     * @param page
+     * @param pageSize
+     * @return
+     */
     public ResponseBean<PageInfo<User>> userList(
             String userName,String startDate,String endDate,
             String description,
@@ -131,6 +145,12 @@ public class UserService {
         selectParam.put("description",description);
         PageHelper.startPage(page, pageSize);
         List<User> userInfos = myUserMapper.queryUser(selectParam);
+        for (User userInfo : userInfos) {
+            //userInfo.setNickName(CodeUtils.convertCharset(userInfo.getNickName()));
+            //userInfo.setDescription(CodeUtils.convertCharset(userInfo.getDescription()));
+            userInfo.setNickName(new String(userInfo.getNickName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            userInfo.setDescription(new String(userInfo.getDescription().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        }
         PageInfo<User> date = new PageInfo<>(userInfos);
         ResponseBean<PageInfo<User>> responseBean = new ResponseBean<>();
         //responseBean.setCodeAndMsg(ErrorCode.OK.value(), ErrorCode.OK.msg());
