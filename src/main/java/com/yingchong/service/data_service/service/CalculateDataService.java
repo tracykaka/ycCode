@@ -20,13 +20,28 @@ public class CalculateDataService {
     @Autowired
     private ReligionService religionService;
 
-    public void calculDate() {
+    public void calculIndexDate() {
         LocalDate today = LocalDate.now();
         LocalDate endDate = LocalDate.of(2018, 10, 3);
         for (LocalDate date = today.minusDays(1); date.isAfter(endDate); date = date.minusDays(1))
         {
             logger.info("计算:{}的数据",date);
             this.TimeTask(date.toString());
+        }
+    }
+
+    public void calculReligionDate() {
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = LocalDate.of(2018, 10, 3);
+        for (LocalDate date = today.minusDays(1); date.isAfter(endDate); date = date.minusDays(1))
+        {
+            logger.info("计算:{}的数据",date);
+            try {
+            //插入宗教访问次数结果集 此接口较慢
+            religionService.insertReligionTimes(date.toString());
+            } catch (Exception e) {
+                logger.error("网络行为意识分类每日数据",e);
+            }
         }
     }
 
@@ -59,12 +74,12 @@ public class CalculateDataService {
             logger.error("网络行为意识分类每日数据",e);
         }
 
-        try {
+        /*try {
             //插入宗教访问次数结果集 此接口较慢
             religionService.insertReligionTimes(date);
         } catch (Exception e) {
             logger.error("网络行为意识分类每日数据",e);
-        }
+        }*/
     }
 
 }

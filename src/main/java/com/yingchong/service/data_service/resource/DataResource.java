@@ -22,10 +22,16 @@ public class DataResource {
     @Autowired
     private CalculateDataService calculateDataService;
 
-    @ApiOperation(value="结算所有结果集数据", notes="结算所有结果集数据")
-    @RequestMapping(value={"/calculDate"}, method= RequestMethod.GET)
-    public void calculDate(){
-        calculateDataService.calculDate();
+    @ApiOperation(value="结算首页结果集数据", notes="结算首页结果集数据")
+    @RequestMapping(value={"/calculIndexDate"}, method= RequestMethod.GET)
+    public void calculIndexDate(){
+        calculateDataService.calculIndexDate();
+    }
+
+    @ApiOperation(value="结算宗教结果集数据", notes="结算宗教结果集数据")
+    @RequestMapping(value={"/calculReligionDate"}, method= RequestMethod.GET)
+    public void calculReligionDate(){
+        calculateDataService.calculReligionDate();
     }
 
 }
