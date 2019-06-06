@@ -20,7 +20,7 @@ import java.util.Map;
 public class JdomUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ReligionService.class);
-
+    private static SAXBuilder builder = new SAXBuilder();
     /**
      * 将 XML 转化为 map
      *
@@ -37,7 +37,6 @@ public class JdomUtils {
         Map<String,String> m = new HashMap<>();
         try {
             InputStream in = new ByteArrayInputStream(strxml.getBytes(StandardCharsets.UTF_8));
-            SAXBuilder builder = new SAXBuilder();
             Document doc = builder.build(in);
             // 解析 DOM
             Element root = doc.getRootElement();
