@@ -1,11 +1,13 @@
 package com.yingchong.service.data_service.service;
 
+import com.yingchong.service.data_service.service.thread.CompareThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.concurrent.ExecutorService;
 
 @Service
 public class CalculateDataService {
@@ -23,11 +25,20 @@ public class CalculateDataService {
     public void calculIndexDate() {
         LocalDate today = LocalDate.now();
         LocalDate endDate = LocalDate.of(2018, 10, 3);
+        ExecutorService pool = CompareThread.newCachedThreadPool();
+
         for (LocalDate date = today.minusDays(1); date.isAfter(endDate); date = date.minusDays(1))
         {
             logger.info("计算:{}的数据",date);
-            this.TimeTask(date.toString());
+            //this.TimeTask(date.toString());
+            this.executeJob(pool,date.toString());
         }
+        pool.shutdown();
+    }
+
+    private void executeJob(ExecutorService pool, String date) {
+        Runnable runnable = () -> TimeTask(date);
+        pool.execute(runnable);
     }
 
     public void calculReligionDate() {

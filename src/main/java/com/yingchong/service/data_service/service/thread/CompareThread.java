@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class CompareThread {
 
     public static ExecutorService newCachedThreadPool() {
-        return new ThreadPoolExecutor(10, 5000,
+        return new ThreadPoolExecutor(10, 20,
                 120L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>());
     }
