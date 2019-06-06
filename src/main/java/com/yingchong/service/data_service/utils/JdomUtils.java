@@ -20,7 +20,7 @@ import java.util.Map;
 public class JdomUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ReligionService.class);
-    private static SAXBuilder builder = new SAXBuilder();
+
     /**
      * 将 XML 转化为 map
      *
@@ -35,6 +35,7 @@ public class JdomUtils {
             return null;
         }
         Map<String,String> m = new HashMap<>();
+        SAXBuilder builder = new SAXBuilder();
         try {
             InputStream in = new ByteArrayInputStream(strxml.getBytes(StandardCharsets.UTF_8));
             Document doc = builder.build(in);
@@ -52,6 +53,8 @@ public class JdomUtils {
         } catch (Exception e) {
             logger.error("",e);
             //throw new IOException(e.getMessage()); // 统一转化为 IO 异常输出
+        }finally {
+            builder = null;
         }
         return m;
     }
