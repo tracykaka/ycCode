@@ -293,7 +293,7 @@ public class ReligionService {
         int times = totalCount / step + 1;
         for (int i = 0; i < times; i++) {
             int s1 = (i * step);
-            batchSQL(pool,tableName, featureUrls, s1,date);
+            batchSQL(tableName, featureUrls, s1,date);
             //executeJob(pool, tableName, featureUrls, s1,date);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}", i, s1);
@@ -325,14 +325,14 @@ public class ReligionService {
         };
         pool.execute(runnable);
     }
-    private void batchSQL(ExecutorService pool,String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
+    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
         if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
-                //parseMap(featureUrls, date, bizActionBean);
-                executeJob1(pool,featureUrls,bizActionBean,date);
+                parseMap(featureUrls, date, bizActionBean);
+                //executeJob1(pool,featureUrls,bizActionBean,date);
             }
         }
         bizActionBeans = null;

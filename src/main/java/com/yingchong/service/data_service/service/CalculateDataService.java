@@ -55,6 +55,20 @@ public class CalculateDataService {
             }
         }
     }
+    public void calculReligionDateByDate(String startDateStr,String endDateStr) {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        for (LocalDate date = startDate; date.isAfter(endDate); date = date.minusDays(1))
+        {
+            logger.info("计算:{}的数据",date);
+            try {
+            //插入宗教访问次数结果集 此接口较慢
+            religionService.insertReligionTimes(date.toString());
+            } catch (Exception e) {
+                logger.error("网络行为意识分类每日数据",e);
+            }
+        }
+    }
 
     public void TimeTask(String date) {
         try {
