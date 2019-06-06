@@ -30,7 +30,7 @@ public interface MyReligionTimeMapper {
             @Param("endTime") String endTime
     );
 
-    @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time visitTime,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail,\n" +
+    @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time date,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail,\n" +
             "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC,count(*) visitTimes from religion_times " +
             "where religion_name =#{religionName} and times_date >= #{startDate} and times_date <= #{endDate} " +
             "GROUP BY url order by visitTimes desc ")

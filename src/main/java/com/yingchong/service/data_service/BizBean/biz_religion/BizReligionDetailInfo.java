@@ -1,10 +1,22 @@
 package com.yingchong.service.data_service.BizBean.biz_religion;
 
+import java.util.Date;
+
 public class BizReligionDetailInfo {
 
     private String religionName,url,title,terminal,visitTime,srcIP,category,domain,DNS,snapshot,
     terminalDetail,tarIP,srcPort,protocol,MAC;
     private Integer visitTimes=0;
+
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public String getReligionName() {
         return religionName;
