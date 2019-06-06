@@ -288,8 +288,8 @@ public class ReligionService {
         int times = totalCount / step + 1;
         for (int i = 0; i < times; i++) {
             int s1 = (i * step);
-            //batchSQL(tableName, featureUrls, s1,date);
-            executeJob(pool, tableName, featureUrls, s1,date);
+            batchSQL(pool,tableName, featureUrls, s1,date);
+            //executeJob(pool, tableName, featureUrls, s1,date);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}", i, s1);
         }
@@ -305,33 +305,47 @@ public class ReligionService {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                batchSQL(tableName, featureUrls, s1,date);
+                //batchSQL(tableName, featureUrls, s1,date);
             }
         };
         pool.execute(runnable);
     }
 
-    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
+    private void executeJob1(ExecutorService pool, List<FeatureUrl> featureUrls, BizActionBean bizActionBean,String date) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                parseMap(featureUrls,date,bizActionBean);
+            }
+        };
+        pool.execute(runnable);
+    }
+    private void batchSQL(ExecutorService pool,String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
         if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
-                Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
-                if (resultMap != null) {
-                    String s = resultMap.get(trace_t);
-                    if (web_url.equals(s)) {//是请求 web 网站
-                        String userVisitUrl = resultMap.get(url);
-                        for (FeatureUrl featureUrl : featureUrls) {
-                            compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl,date);
-                        }
-                    }
-                    s = null;
-                }
-                resultMap = null;
+                //parseMap(featureUrls, date, bizActionBean);
+                executeJob1(pool,featureUrls,bizActionBean,date);
             }
         }
         bizActionBeans = null;
+    }
+
+    private void parseMap(List<FeatureUrl> featureUrls, String date, BizActionBean bizActionBean) {
+        Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
+        if (resultMap != null) {
+            String s = resultMap.get(trace_t);
+            if (web_url.equals(s)) {//是请求 web 网站
+                String userVisitUrl = resultMap.get(url);
+                for (FeatureUrl featureUrl : featureUrls) {
+                    compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl,date);
+                }
+            }
+            s = null;
+        }
+        resultMap = null;
     }
 
     private void compareUrl(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, FeatureUrl featureUrl,String date) {
