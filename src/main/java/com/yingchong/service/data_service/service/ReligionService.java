@@ -126,7 +126,12 @@ public class ReligionService {
             String religionName,String startDate,String endDate,
             Integer page,Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(religionName,startDate,endDate);
+        //List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(CodeUtils.convertCharset88591(religionName),startDate,endDate);
+        List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionDetail(new String(religionName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1),startDate,endDate);
+        for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
+            bizReligionDetailInfo.setVisitTime(bizReligionDetailInfo.getDate() == null?"":DateUtil.formatDateToStr(bizReligionDetailInfo.getDate(),"yyyy-MM-dd HH:mm:ss"));
+            bizReligionDetailInfo.setReligionName(CodeUtils.convertCharset(bizReligionDetailInfo.getReligionName()));
+        }
         PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
         return new ResponseBean<>(data);
     }
