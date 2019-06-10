@@ -25,6 +25,7 @@ public class TimeTask {
     @Scheduled(cron = "0 0 0 1/1 * ?")
     public void calculateResult(){
         Date nowDate = new Date();
+        nowDate = DateUtil.addDay(nowDate, -1);//减一天
         String date = DateUtil.formatDateToStr(nowDate, "yyyy-MM-dd");
         calculateDataService.TimeTask(date);
     }

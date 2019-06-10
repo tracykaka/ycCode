@@ -81,6 +81,9 @@ public class AppTypeService {
     public ResponseBean<BizAppTreadBean> actionTypeTrend(String startDate, String endDate) {
         BizAppTreadBean bizAppTreadBean = new BizAppTreadBean();
         List<BizAppTypeBean> top3 = myAppTypeMapper.selectAppTypeResult(startDate, endDate);
+        if (top3 == null || top3.size()==0) {
+            return new ResponseBean<>(bizAppTreadBean);
+        }
         List<BizAppTypeBean> bizAppTypeBeans1 = null;
         List<BizAppTypeBean> bizAppTypeBeans2 = null;
         List<BizAppTypeBean> bizAppTypeBeans3 = null;

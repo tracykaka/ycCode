@@ -200,12 +200,13 @@ public class ReligionService {
         List<BizReligionPercent> yisilanList = bizReligionTrend.getYisilanList();
 
         LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern));
+        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(AppTypeService.dateParttern)).plusDays(1);
         int i = 0;
         for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1))
         {
-            checkListData(daojiaoList, start, i, date,"道教");
+            logger.info("date ={}",date);
             checkListData(fojiaoList, start, i, date,"佛教");
+            checkListData(daojiaoList, start, i, date,"道教");
             checkListData(jiduList, start, i, date,"基督教");
             checkListData(tianzhujiaoList, start, i, date,"天主教");
             checkListData(yisilanList, start, i, date,"伊斯兰教");
@@ -214,7 +215,7 @@ public class ReligionService {
     }
 
     private void checkListData(List<BizReligionPercent> jiaoList, LocalDate start, int i, LocalDate date,String religionName) {
-        if(jiaoList.size()-1 > i){
+        if(jiaoList.size()-1 >= i){//循环不超过 size
             BizReligionPercent bizReligionPercent = jiaoList.get(i);
             if(bizReligionPercent==null || !date.toString().equals(bizReligionPercent.getDateStr())){
                 bizReligionPercent = new BizReligionPercent();
@@ -223,9 +224,9 @@ public class ReligionService {
                 bizReligionPercent.setVisitTime(0);
                 jiaoList.add(i,bizReligionPercent);
             }
-        }else {
+        }else {//超过,超过分为数组为空和不为空的时候
             BizReligionPercent bizReligionPercent = new BizReligionPercent();
-            bizReligionPercent.setDateStr(start.plusDays(i+1).toString());
+            bizReligionPercent.setDateStr(start.plusDays(i).toString());
             bizReligionPercent.setReligionName(religionName);
             bizReligionPercent.setVisitTime(0);
             jiaoList.add(bizReligionPercent);

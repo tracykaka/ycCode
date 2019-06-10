@@ -3,6 +3,7 @@ package com.yingchong.service.data_service.mybatis.model;
 import java.util.Date;
 
 public class AppFluxSort {
+    private Integer id;
 
     private String appName;
 
@@ -15,6 +16,14 @@ public class AppFluxSort {
     private Date createTime;
 
     private Date updateTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getAppName() {
         return appName;

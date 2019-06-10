@@ -1,12 +1,13 @@
 package com.yingchong.service.data_service.mybatis.mapper;
 
 import com.yingchong.service.data_service.mybatis.model.AppFluxSort;
+import com.yingchong.service.data_service.mybatis.model.AppFluxSortExample;
 import com.yingchong.service.data_service.mybatis.model.AppFluxSortExample.Criteria;
 import com.yingchong.service.data_service.mybatis.model.AppFluxSortExample.Criterion;
-import com.yingchong.service.data_service.mybatis.model.AppFluxSortExample;
+import org.apache.ibatis.jdbc.SQL;
+
 import java.util.List;
 import java.util.Map;
-import org.apache.ibatis.jdbc.SQL;
 
 public class AppFluxSortSqlProvider {
 
@@ -27,6 +28,10 @@ public class AppFluxSortSqlProvider {
     public String insertSelective(AppFluxSort record) {
         SQL sql = new SQL();
         sql.INSERT_INTO("app_flux_sort");
+        
+        if (record.getId() != null) {
+            sql.VALUES("id", "#{id,jdbcType=INTEGER}");
+        }
         
         if (record.getAppName() != null) {
             sql.VALUES("app_name", "#{appName,jdbcType=VARCHAR}");
@@ -58,10 +63,11 @@ public class AppFluxSortSqlProvider {
     public String selectByExample(AppFluxSortExample example) {
         SQL sql = new SQL();
         if (example != null && example.isDistinct()) {
-            sql.SELECT_DISTINCT("app_name");
+            sql.SELECT_DISTINCT("id");
         } else {
-            sql.SELECT("app_name");
+            sql.SELECT("id");
         }
+        sql.SELECT("app_name");
         sql.SELECT("flux");
         sql.SELECT("flux_percentage");
         sql.SELECT("flux_date");
@@ -83,6 +89,10 @@ public class AppFluxSortSqlProvider {
         
         SQL sql = new SQL();
         sql.UPDATE("app_flux_sort");
+        
+        if (record.getId() != null) {
+            sql.SET("id = #{record.id,jdbcType=INTEGER}");
+        }
         
         if (record.getAppName() != null) {
             sql.SET("app_name = #{record.appName,jdbcType=VARCHAR}");
@@ -116,6 +126,7 @@ public class AppFluxSortSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("app_flux_sort");
         
+        sql.SET("id = #{record.id,jdbcType=INTEGER}");
         sql.SET("app_name = #{record.appName,jdbcType=VARCHAR}");
         sql.SET("flux = #{record.flux,jdbcType=DOUBLE}");
         sql.SET("flux_percentage = #{record.fluxPercentage,jdbcType=VARCHAR}");
@@ -125,6 +136,39 @@ public class AppFluxSortSqlProvider {
         
         AppFluxSortExample example = (AppFluxSortExample) parameter.get("example");
         applyWhere(sql, example, true);
+        return sql.toString();
+    }
+
+    public String updateByPrimaryKeySelective(AppFluxSort record) {
+        SQL sql = new SQL();
+        sql.UPDATE("app_flux_sort");
+        
+        if (record.getAppName() != null) {
+            sql.SET("app_name = #{appName,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getFlux() != null) {
+            sql.SET("flux = #{flux,jdbcType=DOUBLE}");
+        }
+        
+        if (record.getFluxPercentage() != null) {
+            sql.SET("flux_percentage = #{fluxPercentage,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getFluxDate() != null) {
+            sql.SET("flux_date = #{fluxDate,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getCreateTime() != null) {
+            sql.SET("create_time = #{createTime,jdbcType=TIMESTAMP}");
+        }
+        
+        if (record.getUpdateTime() != null) {
+            sql.SET("update_time = #{updateTime,jdbcType=TIMESTAMP}");
+        }
+        
+        sql.WHERE("id = #{id,jdbcType=INTEGER}");
+        
         return sql.toString();
     }
 
