@@ -145,6 +145,11 @@ public class ReligionService {
         for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
             bizReligionDetailInfo.setVisitTime(bizReligionDetailInfo.getDate() == null?"":DateUtil.formatDateToStr(bizReligionDetailInfo.getDate(),"yyyy-MM-dd HH:mm:ss"));
             bizReligionDetailInfo.setReligionName(CodeUtils.convertCharset(bizReligionDetailInfo.getReligionName()));
+            bizReligionDetailInfo.setUrl(CodeUtils.convertCharset(bizReligionDetailInfo.getUrl()));
+            bizReligionDetailInfo.setTitle(CodeUtils.convertCharset(bizReligionDetailInfo.getTitle()));
+            bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
+            bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
+
         }
         PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
         return new ResponseBean<>(data);
