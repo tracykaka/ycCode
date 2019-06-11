@@ -65,6 +65,7 @@ public class ReligionService {
      * @param pageSize
      * @return
      */
+    //@JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseBean<PageInfo<BizReligionDetailInfo>> peopleVisitTimesDetail(
             String user,
             String startDate,String endDate,
