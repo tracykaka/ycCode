@@ -1,9 +1,9 @@
 package com.yingchong.service.data_service.service.filter;
 
 
+import com.alibaba.fastjson.JSON;
 import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.utils.LoginUtil;
-import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -106,8 +105,8 @@ public class LoginFilter implements Filter {
         logger.info("未登录--" + requestURI);
         ResponseBean<Void> responseBean = new ResponseBean<>();
         responseBean.setCodeAndMsg("500","未登录或者登录过期");
-        Response build = Response.ok(responseBean).build();
-        String result = JSON.toJSONString(build);
+        //Response build = Response.ok(responseBean).build();
+        String result = JSON.toJSONString(responseBean);
         OutputStream out = response.getOutputStream();
         out.write(result.getBytes(StandardCharsets.UTF_8));
         out.flush();
