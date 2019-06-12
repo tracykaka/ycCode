@@ -1,16 +1,20 @@
 package com.yingchong.service.data_service.service.filter;
 
 
+import com.yingchong.service.data_service.BizBean.ResponseBean;
 import com.yingchong.service.data_service.utils.LoginUtil;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 
 @Component
@@ -74,8 +78,9 @@ public class LoginFilter implements Filter {
                 return;
             }
             if (token == null){
-                logger.info("未登录--" + requestURI);
-                ((HttpServletResponse)response).sendRedirect("/user/notLogin");
+                //logger.info("未登录--" + requestURI);
+                //((HttpServletResponse)response).sendRedirect("/user/notLogin");
+                noLogin(response,requestURI);
                 return;
             }
             //logger.info("token={},redisUtils={},env={}",token,redisUtils,env);
@@ -83,8 +88,9 @@ public class LoginFilter implements Filter {
             if(s!=null && !s.isEmpty() && !"null".equals(s)){
                 chain.doFilter(request, response);
             }else {
-                logger.info("未登录--" + requestURI);
-                ((HttpServletResponse)response).sendRedirect("/user/notLogin");
+                //logger.info("未登录--" + requestURI);
+                //((HttpServletResponse)response).sendRedirect("/user/notLogin");
+                noLogin(response,requestURI);
             }
         } finally{
             LoginUtil.LOGINBEAN.remove();
@@ -94,6 +100,17 @@ public class LoginFilter implements Filter {
     @Override
     public void destroy() {
 
+    }
+
+    private void noLogin(ServletResponse response, String requestURI) throws IOException {
+        logger.info("未登录--" + requestURI);
+        ResponseBean<Void> responseBean = new ResponseBean<>();
+        responseBean.setCodeAndMsg("500","未登录或者登录过期");
+        Response build = Response.ok(responseBean).build();
+        String result = JSON.toJSONString(build);
+        OutputStream out = response.getOutputStream();
+        out.write(result.getBytes(StandardCharsets.UTF_8));
+        out.flush();
     }
 
 }
