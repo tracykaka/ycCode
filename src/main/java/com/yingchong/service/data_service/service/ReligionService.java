@@ -122,6 +122,8 @@ public class ReligionService {
         PageHelper.startPage(page, pageSize);
         List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectReligionUrlRank(startDate, endDate);
         for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
+            bizReligionDetailInfo.setTitle(CodeUtils.convertCharset(bizReligionDetailInfo.getTitle()));
+            bizReligionDetailInfo.setUrl(CodeUtils.convertCharset(bizReligionDetailInfo.getUrl()));
             bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
             bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
         }
