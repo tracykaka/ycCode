@@ -1,9 +1,11 @@
 package com.yingchong.service.data_service.service;
 
 import com.yingchong.service.data_service.BizBean.ResponseBean;
+import com.yingchong.service.data_service.BizBean.biz_app.BizAppRelationBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppTreadBean;
 import com.yingchong.service.data_service.BizBean.biz_app.BizAppTypeBean;
 import com.yingchong.service.data_service.mapper.MyAppTypeMapper;
+import com.yingchong.service.data_service.mybatis.mapper.ActionListMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ActionTypeMapper;
 import com.yingchong.service.data_service.mybatis.model.ActionType;
 import com.yingchong.service.data_service.mybatis.model.ActionTypeExample;
@@ -16,8 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AppTypeService {
@@ -28,6 +29,9 @@ public class AppTypeService {
 
     @Autowired
     private ActionTypeMapper actionTypeMapper;
+
+    @Autowired
+    private ActionListMapper actionListMapper;
 
     public static final String dateParttern = "yyyy-MM-dd";
 
@@ -63,13 +67,82 @@ public class AppTypeService {
         return true;
     }
 
+    /**
+     * 网络意识形态分类
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     public ResponseBean<List<BizAppTypeBean>> actionTypeList(String startDate, String endDate) {
         List<BizAppTypeBean> bizAppTypeBeans = myAppTypeMapper.selectAppTypeResult(startDate, endDate);
-        for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
-            //logger.info("utf8: {}",new String(bizAppTypeBean.getApp().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {//中文转码
             bizAppTypeBean.setApp(CodeUtils.convertCharset(bizAppTypeBean.getApp()));
         }
-        return new ResponseBean<>(bizAppTypeBeans);
+        //List<ActionList> actionLists = actionListMapper.selectByExample(new ActionListExample());
+        List<BizAppRelationBean> bizAppRelationBeans = myAppTypeMapper.selectAppTypeRelation();
+        for (BizAppRelationBean bizAppRelationBean : bizAppRelationBeans) {//中文转码
+            //bizAppRelationBean.setActionName(CodeUtils.convertCharset(bizAppRelationBean.getActionName()));
+            bizAppRelationBean.setActionName(CodeUtils.convertUtf8ToLatin1(bizAppRelationBean.getActionName()));
+            bizAppRelationBean.setRelationItemName(CodeUtils.convertUtf8ToLatin1(bizAppRelationBean.getRelationItemName()));
+        }
+        Map<String, Integer> map = new HashMap<>();
+        for (BizAppTypeBean bizAppTypeBean : bizAppTypeBeans) {
+            String actionTypeName = bizAppTypeBean.getApp();
+            for (BizAppRelationBean bizAppRelationBean : bizAppRelationBeans) {
+                String relationItemName = bizAppRelationBean.getRelationItemName();
+                if(actionTypeName!=null && actionTypeName.equals(relationItemName)){
+                    String actionName = bizAppRelationBean.getActionName();
+                    Integer integer = map.get(actionName);
+                    if(integer==null) integer = 0;
+                    map.put(actionName, integer + bizAppTypeBean.getNum());
+                    break;
+                }
+            }
+
+        }
+        Iterator<String> iterator = map.keySet().iterator();
+        List<BizAppTypeBean> res = new ArrayList<>();
+        while (iterator.hasNext()) {
+            BizAppTypeBean bean = new BizAppTypeBean();
+            String key = iterator.next();
+            Integer num = map.get(key);
+            bean.setApp(key);
+            bean.setNum(num);
+            res.add(bean);
+        }
+
+        //orderByNum(res);
+        res = orderByOrder(res,bizAppRelationBeans);
+        return new ResponseBean<>(res);
+    }
+
+    /**
+     * 通过数量倒序排序
+     * @param res
+     */
+    private void orderByNum(List<BizAppTypeBean> res) {
+        Comparator<BizAppTypeBean> comparator = (o1, o2) -> o2.getNum() - o1.getNum();
+        res.sort(comparator);
+    }
+    /**
+     * 通过指定 order 排序
+     * @param res
+     */
+    private List<BizAppTypeBean> orderByOrder(List<BizAppTypeBean> res,List<BizAppRelationBean> bizAppRelationBeans) {
+        Map<Integer, BizAppTypeBean> map = new TreeMap<>();
+        for (int i=0;i<res.size();i++) {
+            for (BizAppRelationBean bizAppRelationBean : bizAppRelationBeans) {
+                if(bizAppRelationBean.getActionName().equals(res.get(i).getApp()))
+                map.put(bizAppRelationBean.getOrderNum(),res.get(i));
+            }
+        }
+        res = new ArrayList<>();
+        for (int i=0;i<bizAppRelationBeans.size();i++) {
+            if (map.get(i) != null) {
+                res.add(map.get(i));
+            }
+        }
+        return res;
     }
 
     /**

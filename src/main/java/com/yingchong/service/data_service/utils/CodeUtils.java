@@ -24,6 +24,9 @@ public class CodeUtils {
         return null;
     }
 
+    public static String convertUtf8ToLatin1(String str) {
+        return new String (str.getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8);
+    }
     private static byte[] getByte(String s) {
         int length = s.length();
         byte[] buffer = new byte[length];
