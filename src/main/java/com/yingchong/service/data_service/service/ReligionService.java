@@ -9,12 +9,10 @@ import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionPercen
 import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionTrend;
 import com.yingchong.service.data_service.mapper.MyActionMapper;
 import com.yingchong.service.data_service.mapper.MyReligionTimeMapper;
+import com.yingchong.service.data_service.mybatis.mapper.FeatureKeyMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FeatureUrlMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ReligionTimesMapper;
-import com.yingchong.service.data_service.mybatis.model.FeatureUrl;
-import com.yingchong.service.data_service.mybatis.model.FeatureUrlExample;
-import com.yingchong.service.data_service.mybatis.model.ReligionTimes;
-import com.yingchong.service.data_service.mybatis.model.ReligionTimesExample;
+import com.yingchong.service.data_service.mybatis.model.*;
 import com.yingchong.service.data_service.service.thread.CompareThread;
 import com.yingchong.service.data_service.utils.CodeUtils;
 import com.yingchong.service.data_service.utils.DateUtil;
@@ -49,6 +47,8 @@ public class ReligionService {
     private MyActionMapper myActionMapper;
     @Autowired
     private FeatureUrlMapper featureUrlMapper;
+    @Autowired
+    private FeatureKeyMapper featureKeyMapper;
 
     @Autowired
     private ReligionTimesMapper religionTimesMapper;
@@ -310,12 +310,14 @@ public class ReligionService {
         String tableName = date.replaceAll("-", "") + "_action";
 
         List<FeatureUrl> featureUrls = featureUrlMapper.selectByExample(new FeatureUrlExample());
+        List<FeatureKey> featureKeys = featureKeyMapper.selectByExample(new FeatureKeyExample());
+
         Integer totalCount = myActionMapper.selectCountAction(tableName);
         //logger.info("s2=========={}",System.currentTimeMillis());
         int times = totalCount / step + 1;
         for (int i = 0; i < times; i++) {
             int s1 = (i * step);
-            batchSQL(tableName, featureUrls, s1,date);
+            batchSQL(tableName, featureUrls,featureKeys, s1,date);
             //executeJob(pool, tableName, featureUrls, s1,date);
             //logger.info("s4=========={}",System.currentTimeMillis());
             logger.info("i={},s1={}", i, s1);
@@ -338,37 +340,46 @@ public class ReligionService {
         pool.execute(runnable);
     }
 
-    private void executeJob1(ExecutorService pool, List<FeatureUrl> featureUrls, BizActionBean bizActionBean,String date) {
+    private void executeJob1(ExecutorService pool, List<FeatureUrl> featureUrls,List<FeatureKey> featureKeys, BizActionBean bizActionBean,String date) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                parseMap(featureUrls,date,bizActionBean);
+                compareUrlAndKey(featureUrls,featureKeys,date,bizActionBean);
             }
         };
         pool.execute(runnable);
     }
-    private void batchSQL(String tableName, List<FeatureUrl> featureUrls, int s1,String date) {
+    private void batchSQL(String tableName, List<FeatureUrl> featureUrls,List<FeatureKey> featureKeys, int s1,String date) {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
         if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
-                parseMap(featureUrls, date, bizActionBean);
+                compareUrlAndKey(featureUrls,featureKeys, date, bizActionBean);
                 //executeJob1(pool,featureUrls,bizActionBean,date);
             }
         }
         bizActionBeans = null;
     }
 
-    private void parseMap(List<FeatureUrl> featureUrls, String date, BizActionBean bizActionBean) {
+    private void compareUrlAndKey(List<FeatureUrl> featureUrls, List<FeatureKey> featureKeys,String date, BizActionBean bizActionBean) {
         Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
         if (resultMap != null) {
             String s = resultMap.get(trace_t);
             if (web_url.equals(s)) {//是请求 web 网站
                 String userVisitUrl = resultMap.get(url);
-                for (FeatureUrl featureUrl : featureUrls) {
+                String userVisitTitle = resultMap.get("title");
+                for (FeatureUrl featureUrl : featureUrls) {//比较 url
                     compareUrl(bizActionBean, resultMap, userVisitUrl, featureUrl,date);
                 }
+                for (FeatureKey featureKey : featureKeys) {
+                    if (userVisitUrl.contains(featureKey.getKeyWord())
+                    ||(userVisitTitle!=null && userVisitTitle.contains(featureKey.getKeyWord()))
+                    ) {
+                        this.insertReligionTimesData(bizActionBean,resultMap,userVisitUrl,featureKey.getReligionName(),date);
+                    }
+                }
+
             }
             s = null;
         }
@@ -379,33 +390,37 @@ public class ReligionService {
         //logger.info("userVisitUrl={}, featureUrl={}",userVisitUrl,featureUrl.getUrl());
         //if(userVisitUrl.contains("baidu.com"))
         if (userVisitUrl.contains(featureUrl.getUrl())) {//对应的宗教行为,插入到结果集
-            ReligionTimes rt = new ReligionTimes();
-            rt.setReligionName(featureUrl.getReligionName());
-            if(userVisitUrl.length()>1000) userVisitUrl = userVisitUrl.substring(0,1000);
-            rt.setUrl(userVisitUrl);
-            rt.setWebName(resultMap.get("title"));
-            rt.setWebTitle(resultMap.get("title"));
-            rt.setHostIp(bizActionBean.getHostIp());
-            rt.setDetIp(bizActionBean.getDstIp());
-            rt.setHostPort(bizActionBean.getSrcPort());
-            rt.setTerminalDetail(resultMap.get("termtype"));
-            rt.setDns(resultMap.get("DNS"));
-            if(resultMap.get("urldata").length()>1000){
-                rt.setDomainName(resultMap.get("urldata").substring(0,1000));
-            }else {
-                rt.setDomainName(resultMap.get("urldata"));
-            }
-            rt.setMacAddress(resultMap.get("mac"));
-            rt.setProtocol(resultMap.get("nProtocol"));
-            rt.setVisiteTime(bizActionBean.getRecordTime());
-            rt.setTerminalType(resultMap.get("termtype"));
-
-            rt.setCreateTime(new Date());
-            rt.setUpdateTime(new Date());
-            rt.setTimesDate(DateUtil.StringToDate(date,AppTypeService.dateParttern));
-            int insert = religionTimesMapper.insert(rt);
-            logger.info("匹配到宗教行为:{}, insert={}", userVisitUrl, insert);
+            insertReligionTimesData(bizActionBean, resultMap, userVisitUrl,featureUrl.getReligionName() , date);
         }
+    }
+
+    private void insertReligionTimesData(BizActionBean bizActionBean, Map<String, String> resultMap, String userVisitUrl, String religionName, String date) {
+        ReligionTimes rt = new ReligionTimes();
+        rt.setReligionName(religionName);
+        if(userVisitUrl.length()>1000) userVisitUrl = userVisitUrl.substring(0,1000);
+        rt.setUrl(userVisitUrl);
+        rt.setWebName(resultMap.get("title"));
+        rt.setWebTitle(resultMap.get("title"));
+        rt.setHostIp(bizActionBean.getHostIp());
+        rt.setDetIp(bizActionBean.getDstIp());
+        rt.setHostPort(bizActionBean.getSrcPort());
+        rt.setTerminalDetail(resultMap.get("termtype"));
+        rt.setDns(resultMap.get("DNS"));
+        if(resultMap.get("urldata").length()>1000){
+            rt.setDomainName(resultMap.get("urldata").substring(0,1000));
+        }else {
+            rt.setDomainName(resultMap.get("urldata"));
+        }
+        rt.setMacAddress(resultMap.get("mac"));
+        rt.setProtocol(resultMap.get("nProtocol"));
+        rt.setVisiteTime(bizActionBean.getRecordTime());
+        rt.setTerminalType(resultMap.get("termtype"));
+
+        rt.setCreateTime(new Date());
+        rt.setUpdateTime(new Date());
+        rt.setTimesDate(DateUtil.StringToDate(date, AppTypeService.dateParttern));
+        int insert = religionTimesMapper.insert(rt);
+        logger.info("匹配到宗教行为:{}, insert={}", userVisitUrl, insert);
     }
 
 
