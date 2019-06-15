@@ -353,12 +353,12 @@ public class ReligionService {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
         //logger.info("s3=========={}",System.currentTimeMillis());
-        if (bizActionBeans != null && bizActionBeans.size() > 0) {
+        /*if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
                 compareUrlAndKey(featureUrls,featureKeys, date, bizActionBean);
                 //executeJob1(pool,featureUrls,bizActionBean,date);
             }
-        }
+        }*/
         bizActionBeans = null;
     }
 
