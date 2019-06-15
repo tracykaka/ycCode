@@ -352,13 +352,16 @@ public class ReligionService {
     private void batchSQL(String tableName, List<FeatureUrl> featureUrls,List<FeatureKey> featureKeys, int s1,String date) {
         logger.info("启动线程{}查询:", s1);
         List<BizActionBean> bizActionBeans = myActionMapper.selectActionById(tableName, s1, step);
+        long s3 = System.currentTimeMillis();
         //logger.info("s3=========={}",System.currentTimeMillis());
-        /*if (bizActionBeans != null && bizActionBeans.size() > 0) {
+        if (bizActionBeans != null && bizActionBeans.size() > 0) {
             for (BizActionBean bizActionBean : bizActionBeans) {
                 compareUrlAndKey(featureUrls,featureKeys, date, bizActionBean);
                 //executeJob1(pool,featureUrls,bizActionBean,date);
             }
-        }*/
+        }
+        long s4 = System.currentTimeMillis();
+        logger.info("对比耗时:{}",s4-s3);
         bizActionBeans = null;
     }
 
