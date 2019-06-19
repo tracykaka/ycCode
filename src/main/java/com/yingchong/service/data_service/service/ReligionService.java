@@ -74,11 +74,11 @@ public class ReligionService {
         PageHelper.startPage(page, pageSize);
         List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.peopleVisitTimesDetail(user, startDate, endDate);
         for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
-            bizReligionDetailInfo.setUrl(CodeUtils.convertCharset(bizReligionDetailInfo.getUrl()));
-            bizReligionDetailInfo.setTitle(CodeUtils.convertCharset(bizReligionDetailInfo.getTitle()));
-            bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
-            bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
-            bizReligionDetailInfo.setReligionName(CodeUtils.convertCharset(bizReligionDetailInfo.getReligionName()));
+            convertStrColumn(bizReligionDetailInfo);
+            String visitTime = bizReligionDetailInfo.getVisitTime();
+            Date date = bizReligionDetailInfo.getDate();
+            long t = DateUtil.formatStringToDate(visitTime).getTime() + (date ==null? 0 :date.getTime());
+            bizReligionDetailInfo.setVisitTime(DateUtil.formatLongToStr(t,"yyyy-MM-dd HH:mm:ss"));
         }
         PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
         return new ResponseBean<>(data);
@@ -101,13 +101,18 @@ public class ReligionService {
         PageHelper.startPage(page, pageSize);
         List<BizReligionDetailInfo> bizReligionDetailInfos = myReligionTimeMapper.selectPeopleVisitTimes(user,startDate, endDate);
         for (BizReligionDetailInfo bizReligionDetailInfo : bizReligionDetailInfos) {
-            bizReligionDetailInfo.setUrl(CodeUtils.convertCharset(bizReligionDetailInfo.getUrl()));
-            bizReligionDetailInfo.setTitle(CodeUtils.convertCharset(bizReligionDetailInfo.getTitle()));
-            bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
-            bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
+            convertStrColumn(bizReligionDetailInfo);
         }
         PageInfo<BizReligionDetailInfo> data = new PageInfo<>(bizReligionDetailInfos);
         return new ResponseBean<>(data);
+    }
+
+    private void convertStrColumn(BizReligionDetailInfo bizReligionDetailInfo) {
+        bizReligionDetailInfo.setUrl(CodeUtils.convertCharset(bizReligionDetailInfo.getUrl()));
+        bizReligionDetailInfo.setTitle(CodeUtils.convertCharset(bizReligionDetailInfo.getTitle()));
+        bizReligionDetailInfo.setTerminalDetail(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminalDetail()));
+        bizReligionDetailInfo.setTerminal(CodeUtils.convertCharset(bizReligionDetailInfo.getTerminal()));
+        bizReligionDetailInfo.setReligionName(CodeUtils.convertCharset(bizReligionDetailInfo.getReligionName()));
     }
 
     /**
