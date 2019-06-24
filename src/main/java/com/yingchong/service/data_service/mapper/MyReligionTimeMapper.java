@@ -59,7 +59,7 @@ public interface MyReligionTimeMapper {
 
 
     @Select("select religion_name religionName,url url,web_title title,terminal_type terminal,visite_time visitTime,host_ip srcIP,domain_name domain,dns DNS, terminal_detail terminalDetail, " +
-            "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC from religion_times " +
+            "det_ip tarIP,host_port srcPort ,protocol protocol,mac_address MAC, times_date date from religion_times " +
             "where times_date >= #{startDate} and times_date <= #{endDate} and host_ip = #{user} " +
             "order by visitTime desc ")
     List<BizReligionDetailInfo> peopleVisitTimesDetail(
