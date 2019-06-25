@@ -37,7 +37,7 @@ public class CalculateDataService {
     }
 
     private void executeJob(ExecutorService pool, String date) {
-        Runnable runnable = () -> TimeTask(date);
+        Runnable runnable = () -> TimeTaskIndex(date);
         pool.execute(runnable);
     }
 
@@ -51,7 +51,7 @@ public class CalculateDataService {
             //插入宗教访问次数结果集 此接口较慢
             religionService.insertReligionTimes(date.toString());
             } catch (Exception e) {
-                logger.error("网络行为意识分类每日数据",e);
+                logger.error("宗教每日数据",e);
             }
         }
     }
@@ -65,46 +65,54 @@ public class CalculateDataService {
             //插入宗教访问次数结果集 此接口较慢
             religionService.insertReligionTimes(date.toString());
             } catch (Exception e) {
-                logger.error("网络行为意识分类每日数据",e);
+                logger.error("宗教每日数据",e);
             }
         }
     }
 
     public void TimeTask(String date) {
+        indexData(date);
+
+        try {
+            //插入宗教访问次数结果集 此接口较慢
+            religionService.insertReligionTimes(date);
+        } catch (Exception e) {
+            logger.error("宗教每日数据",e);
+        }
+    }
+    public void TimeTaskIndex(String date) {
+        indexData(date);
+
+    }
+
+    private void indexData(String date) {
         try {
             //插入流量每日数据
             indexService.insertFluxResult(date);
         } catch (Exception e) {
-            logger.error("插入流量每日数据异常",e);
+            logger.error("插入流量每日数据异常", e);
         }
 
         try {
             //上网时长,每日同步数据
             indexService.insertOnlineTime(date);
         } catch (Exception e) {
-            logger.error("上网时长,每日同步数据",e);
+            logger.error("上网时长,每日同步数据", e);
         }
 
         try {
             //应用流量，每日同步数据
             indexService.insertAppFluxSort(date);
         } catch (Exception e) {
-            logger.error("应用流量，每日同步数据",e);
+            logger.error("应用流量，每日同步数据", e);
         }
 
         try {
             //网络行为意识分类每日数据
             appTypeService.insertActionType(date);
         } catch (Exception e) {
-            logger.error("网络行为意识分类每日数据",e);
+            logger.error("网络行为意识分类每日数据", e);
         }
-
-        /*try {
-            //插入宗教访问次数结果集 此接口较慢
-            religionService.insertReligionTimes(date);
-        } catch (Exception e) {
-            logger.error("网络行为意识分类每日数据",e);
-        }*/
     }
 
 }
