@@ -31,8 +31,7 @@
         <javaClientGenerator
                 targetPackage="com.yingchong.service.data_service.mybatis.mapper"
                 targetProject="src/main/java" type="ANNOTATEDMAPPER" />
-        <table tableName="action_list" domainObjectName="ActionList" />
-        <table tableName="action_relation" domainObjectName="ActionRelation" />
+        <table tableName="feature_key_opposite" domainObjectName="FeatureKeyOpposite" />
         <!-- 根据表生成domain -->
 
             </context>

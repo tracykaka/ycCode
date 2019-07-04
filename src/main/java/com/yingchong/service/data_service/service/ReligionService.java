@@ -10,6 +10,7 @@ import com.yingchong.service.data_service.BizBean.biz_religion.BizReligionTrend;
 import com.yingchong.service.data_service.mapper.MyActionMapper;
 import com.yingchong.service.data_service.mapper.MyReligionTimeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FeatureKeyMapper;
+import com.yingchong.service.data_service.mybatis.mapper.FeatureKeyOppositeMapper;
 import com.yingchong.service.data_service.mybatis.mapper.FeatureUrlMapper;
 import com.yingchong.service.data_service.mybatis.mapper.ReligionTimesMapper;
 import com.yingchong.service.data_service.mybatis.model.*;
@@ -49,6 +50,9 @@ public class ReligionService {
     private FeatureUrlMapper featureUrlMapper;
     @Autowired
     private FeatureKeyMapper featureKeyMapper;
+
+    @Autowired
+    private FeatureKeyOppositeMapper featureKeyOppositeMapper;
 
     @Autowired
     private ReligionTimesMapper religionTimesMapper;
@@ -331,6 +335,10 @@ public class ReligionService {
         long ss2 = System.currentTimeMillis();
         pool.shutdown();
         //logger.info("s5=========={}",System.currentTimeMillis());
+
+        //对结果集进行反向过滤,去掉包含关键词的项
+        oppositeFilter();
+
         logger.info("接口耗时:{}毫秒", ss2 - ss1);
         return true;
     }
@@ -432,4 +440,16 @@ public class ReligionService {
     }
 
 
+    private void oppositeFilter() {
+        List<FeatureKeyOpposite> featureKeyOpposites = featureKeyOppositeMapper.selectByExample(new FeatureKeyOppositeExample());
+        List<ReligionTimes> religionTimes = religionTimesMapper.selectByExample(new ReligionTimesExample());
+        for (ReligionTimes religionTime : religionTimes) {
+            for (FeatureKeyOpposite featureKeyOpposite : featureKeyOpposites) {
+                if (religionTime.getWebTitle()!=null && religionTime.getWebTitle().contains(featureKeyOpposite.getKeyword())) {
+                    religionTimesMapper.deleteByPrimaryKey(religionTime.getId());
+                }
+            }
+        }
+
+    }
 }
