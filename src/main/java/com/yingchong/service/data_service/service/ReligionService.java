@@ -379,7 +379,12 @@ public class ReligionService {
     }
 
     private void compareUrlAndKey(List<FeatureUrl> featureUrls, List<FeatureKey> featureKeys,String date, BizActionBean bizActionBean) {
-        Map<String, String> resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
+        Map<String, String> resultMap = null;
+        try {
+            resultMap = JdomUtils.transferXmlToMap(bizActionBean.getResult());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (resultMap != null) {
             String s = resultMap.get(trace_t);
             if (web_url.equals(s)) {//是请求 web 网站
